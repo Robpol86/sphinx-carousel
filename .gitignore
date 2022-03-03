@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Robpol86
+*.rpm
+.idea/
+requirements*.txt
+.DS_Store
