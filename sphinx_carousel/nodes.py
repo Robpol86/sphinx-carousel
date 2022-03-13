@@ -1,4 +1,5 @@
 """Docutils nodes."""
+# pylint: disable=keyword-arg-before-vararg
 from docutils import nodes
 from sphinx.writers.html5 import HTML5Translator
 
@@ -6,10 +7,28 @@ from sphinx.writers.html5 import HTML5Translator
 class CarouselSlideNode(nodes.Element):
     """Main div."""
 
+    def __init__(self, div_id: str = "", data_ride: str = "", rawsource: str = "", *children, **attributes):
+        """Constructor.
+
+        :param div_id: <div id="...">.
+        :param data_ride: <div data-ride="...">.
+        :param rawsource: Passed to parent class.
+        :param children: Passed to parent class.
+        :param attributes: Passed to parent class.
+        """
+        super().__init__(rawsource, *children, **attributes)
+        self.div_id = div_id
+        self.data_ride = data_ride
+
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselSlideNode"):
         """Append opening tags to document body list."""
-        writer.body.append(writer.starttag(node, "div", "", **{"CLASS": "carousel slide", "data-ride": "carousel"}))
+        attributes = {"CLASS": "carousel slide"}
+        if node.div_id:
+            attributes["ids"] = [node.div_id]
+        if node.data_ride:
+            attributes["data-ride"] = node.data_ride
+        writer.body.append(writer.starttag(node, "div", "", **attributes))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -34,7 +53,7 @@ class CarouselInnerNode(nodes.Element):
 class CarouselItemNode(nodes.Element):
     """Div that contains an image."""
 
-    def __init__(self, active: bool, rawsource="", *children, **attributes):  # pylint: disable=keyword-arg-before-vararg
+    def __init__(self, active: bool, rawsource="", *children, **attributes):
         """Constructor.
 
         :param active: Append active class to div, needed for first image.
