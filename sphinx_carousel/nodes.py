@@ -33,7 +33,7 @@ class CarouselSlideNode(nodes.Element):
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
-        writer.body.extend(["</div>"])
+        writer.body.append("</div>")
 
 
 class CarouselInnerNode(nodes.Element):
@@ -47,7 +47,7 @@ class CarouselInnerNode(nodes.Element):
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
-        writer.body.extend(["</div>"])
+        writer.body.append("</div>")
 
 
 class CarouselItemNode(nodes.Element):
@@ -75,4 +75,4 @@ class CarouselItemNode(nodes.Element):
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
-        writer.body.extend(["</div>"])
+        writer.body.append("</div>")
