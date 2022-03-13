@@ -13,8 +13,7 @@ from docutils.nodes import Element, image as docutils_image
 from docutils.parsers.rst import Directive, directives
 from sphinx.application import Sphinx
 
-from sphinx_carousel import __version__
-from sphinx_carousel.nodes import CarouselControlNode, CarouselInnerNode, CarouselItemNode, CarouselSlideNode
+from sphinx_carousel import __version__, nodes
 
 
 class Carousel(Directive):
@@ -43,17 +42,17 @@ class Carousel(Directive):
         items = []
         for idx, image in enumerate(self.images()):
             image["classes"] += ["d-block", "w-100"]
-            items.append(CarouselItemNode(idx == 0, "", image))
-        inner_div = CarouselInnerNode("", *items)
+            items.append(nodes.CarouselItemNode(idx == 0, "", image))
+        inner_div = nodes.CarouselInnerNode("", *items)
         child_nodes.append(inner_div)
 
         # Build control buttons.
         if "no_controls" not in self.options:
-            buttons = [CarouselControlNode(div_id, prev=True), CarouselControlNode(div_id)]
+            buttons = [nodes.CarouselControlNode(div_id, prev=True), nodes.CarouselControlNode(div_id)]
             child_nodes.extend(buttons)
 
         data_ride = "" if "no_data_ride" in self.options else "carousel"
-        main_div = CarouselSlideNode(div_id, data_ride, "", *child_nodes)
+        main_div = nodes.CarouselSlideNode(div_id, data_ride, "", *child_nodes)
         return [main_div]
 
 
@@ -86,9 +85,9 @@ def setup(app: Sphinx) -> Dict[str, str]:
     """
     app.add_config_value("carousel_add_bootstrap_css_js", True, "html")
     app.add_directive("carousel", Carousel)
-    app.add_node(CarouselControlNode, html=(CarouselControlNode.html_visit, CarouselControlNode.html_depart))
-    app.add_node(CarouselInnerNode, html=(CarouselInnerNode.html_visit, CarouselInnerNode.html_depart))
-    app.add_node(CarouselItemNode, html=(CarouselItemNode.html_visit, CarouselItemNode.html_depart))
-    app.add_node(CarouselSlideNode, html=(CarouselSlideNode.html_visit, CarouselSlideNode.html_depart))
+    nodes.CarouselControlNode.add_node(app)
+    nodes.CarouselInnerNode.add_node(app)
+    nodes.CarouselItemNode.add_node(app)
+    nodes.CarouselSlideNode.add_node(app)
     app.connect("builder-inited", add_static)
     return dict(version=__version__)
