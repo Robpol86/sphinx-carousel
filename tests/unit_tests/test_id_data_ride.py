@@ -44,7 +44,9 @@ def test_no_data_ride(index_html: BeautifulSoup):
     </div>
     """
     carousel_slide = index_html.find_all("div", ["carousel", "slide"])[1]
-    assert not carousel_slide.has_attr("id")
+    assert carousel_slide.has_attr("id")
+    assert len(carousel_slide["id"]) == 45
+    assert carousel_slide["id"].startswith("carousel-")
     assert not carousel_slide.has_attr("data-ride")
 
     carousel_inner = carousel_slide.find_all("div", ["carousel-inner"])[0]

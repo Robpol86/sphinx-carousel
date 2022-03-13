@@ -5,6 +5,7 @@ https://github.com/Robpol86/sphinx-carousel
 https://pypi.org/project/sphinx-carousel
 """
 import shutil
+import uuid
 from pathlib import Path
 from typing import Dict, List
 
@@ -13,7 +14,7 @@ from docutils.parsers.rst import Directive, directives
 from sphinx.application import Sphinx
 
 from sphinx_carousel import __version__
-from sphinx_carousel.nodes import CarouselInnerNode, CarouselItemNode, CarouselSlideNode
+from sphinx_carousel.nodes import CarouselControlNode, CarouselInnerNode, CarouselItemNode, CarouselSlideNode
 
 
 class Carousel(Directive):
@@ -21,6 +22,7 @@ class Carousel(Directive):
 
     has_content = True
     option_spec = {
+        "no_controls": directives.flag,
         "no_data_ride": directives.flag,
     }
     optional_arguments = 1
@@ -34,16 +36,24 @@ class Carousel(Directive):
 
     def run(self) -> List[Element]:
         """Main method."""
+        div_id = self.arguments[0] if self.arguments else f"carousel-{uuid.uuid4()}"
+        child_nodes = []
+
         # Build carousel-inner div.
         items = []
         for idx, image in enumerate(self.images()):
             image["classes"] += ["d-block", "w-100"]
             items.append(CarouselItemNode(idx == 0, "", image))
         inner_div = CarouselInnerNode("", *items)
+        child_nodes.append(inner_div)
 
-        div_id = self.arguments[0] if self.arguments else ""
+        # Build control buttons.
+        if "no_controls" not in self.options:
+            buttons = [CarouselControlNode(div_id, prev=True), CarouselControlNode(div_id)]
+            child_nodes.extend(buttons)
+
         data_ride = "" if "no_data_ride" in self.options else "carousel"
-        main_div = CarouselSlideNode(div_id, data_ride, "", inner_div)
+        main_div = CarouselSlideNode(div_id, data_ride, "", *child_nodes)
         return [main_div]
 
 
@@ -76,6 +86,7 @@ def setup(app: Sphinx) -> Dict[str, str]:
     """
     app.add_config_value("carousel_add_bootstrap_css_js", True, "html")
     app.add_directive("carousel", Carousel)
+    app.add_node(CarouselControlNode, html=(CarouselControlNode.html_visit, CarouselControlNode.html_depart))
     app.add_node(CarouselInnerNode, html=(CarouselInnerNode.html_visit, CarouselInnerNode.html_depart))
     app.add_node(CarouselItemNode, html=(CarouselItemNode.html_visit, CarouselItemNode.html_depart))
     app.add_node(CarouselSlideNode, html=(CarouselSlideNode.html_visit, CarouselSlideNode.html_depart))
