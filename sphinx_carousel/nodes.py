@@ -1,10 +1,34 @@
 """Docutils nodes."""
 # pylint: disable=keyword-arg-before-vararg
+from abc import abstractmethod
+
 from docutils import nodes
+from sphinx.application import Sphinx
 from sphinx.writers.html5 import HTML5Translator
 
 
-class CarouselSlideNode(nodes.Element):
+class _BaseNode(nodes.Element):
+    """Base node class."""
+
+    @staticmethod
+    @abstractmethod
+    def html_visit(writer: HTML5Translator, node: "_BaseNode"):
+        """Append opening tags to document body list."""
+        raise NotImplementedError
+
+    @staticmethod
+    @abstractmethod
+    def html_depart(writer: HTML5Translator, _):
+        """Append closing tags to document body list."""
+        raise NotImplementedError
+
+    @classmethod
+    def add_node(cls, app: Sphinx):
+        """Convenience method that adds the subclass node to the Sphinx app.."""
+        app.add_node(cls, html=(cls.html_visit, cls.html_depart))
+
+
+class CarouselSlideNode(_BaseNode):
     """Main div."""
 
     def __init__(self, div_id: str, data_ride: str = "", rawsource: str = "", *children, **attributes):
@@ -34,7 +58,7 @@ class CarouselSlideNode(nodes.Element):
         writer.body.append("</div>")
 
 
-class CarouselInnerNode(nodes.Element):
+class CarouselInnerNode(_BaseNode):
     """Secondary div that contains the image divs."""
 
     @staticmethod
@@ -48,7 +72,7 @@ class CarouselInnerNode(nodes.Element):
         writer.body.append("</div>")
 
 
-class CarouselItemNode(nodes.Element):
+class CarouselItemNode(_BaseNode):
     """Div that contains an image."""
 
     def __init__(self, active: bool, rawsource="", *children, **attributes):
@@ -76,7 +100,7 @@ class CarouselItemNode(nodes.Element):
         writer.body.append("</div>")
 
 
-class CarouselControlNode(nodes.Element):
+class CarouselControlNode(_BaseNode):
     """Previous/next buttons."""
 
     def __init__(self, div_id: str, prev: bool = False, rawsource: str = "", *children, **attributes):
