@@ -7,7 +7,7 @@ https://pypi.org/project/sphinx-carousel
 from typing import Dict, List
 
 from docutils.nodes import Element, image as docutils_image
-from docutils.parsers.rst import Directive
+from docutils.parsers.rst import Directive, directives
 from sphinx.application import Sphinx
 
 from sphinx_carousel import __version__
@@ -18,6 +18,10 @@ class Carousel(Directive):
     """Main directive."""
 
     has_content = True
+    option_spec = {
+        "no_data_ride": directives.flag,
+    }
+    optional_arguments = 1
 
     def run(self) -> List[Element]:
         """Main method."""
@@ -31,7 +35,9 @@ class Carousel(Directive):
             items.append(CarouselItemNode(idx == 0, "", image))
 
         inner_div = CarouselInnerNode("", *items)
-        main_div = CarouselSlideNode("", inner_div)
+        div_id = self.arguments[0] if self.arguments else ""
+        data_ride = "" if "no_data_ride" in self.options else "carousel"
+        main_div = CarouselSlideNode(div_id, data_ride, "", inner_div)
         return [main_div]
 
 
