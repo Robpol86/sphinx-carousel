@@ -27,9 +27,6 @@ jobs:
           - os: ubuntu-latest
             python: "3.9"
             sphinx: "1.8.6"
-          - os: ubuntu-latest
-            python: "3.9"
-            sphinx: "1.7.9"
     runs-on: "${{matrix.os}}"
     steps:
       - {name: Check out repository code, uses: actions/checkout@v2}
