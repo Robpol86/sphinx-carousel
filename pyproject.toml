@@ -86,7 +86,7 @@ exclude_lines = [
     "^\\s*raise AssertionError",
     "^\\s*raise NotImplementedError",
 ]
-# fail_under = 85  # TODO
+fail_under = 85
 
 [tool.coverage.run]
 branch = true
