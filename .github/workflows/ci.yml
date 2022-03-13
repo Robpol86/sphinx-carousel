@@ -24,20 +24,16 @@ jobs:
           - os: ubuntu-latest
             python: "3.9"
             sphinx: "2.4.5"
-          - os: ubuntu-latest
-            python: "3.9"
-            sphinx: "1.8.6"
     runs-on: "${{matrix.os}}"
     steps:
       - {name: Check out repository code, uses: actions/checkout@v2}
       - {name: Initialize dependencies, id: init, uses: Robpol86/actions-init-deps-py@v3,
          with: {python-version: "${{matrix.python}}", postargs: " -E docs"}}
-      - {name: Remove OpenGraph, run: "poetry remove sphinxext-opengraph; poetry remove -D $_", if: "startsWith(matrix.sphinx, '1.')"}
       - {name: Downgrade Sphinx, run: "poetry add --dev sphinx=${{matrix.sphinx}}", if: "${{matrix.sphinx}}"}
       - {name: Run lints, run: make lint}
       - {name: Run tests, run: make test, env: {PY_COLORS: 1}}
       - {name: Run integration tests, run: make it}
-      - {name: Build docs, run: make docs, if: "!startsWith(matrix.sphinx, '1.')"}
+      - {name: Build docs, run: make docs}
       - {name: Build package, run: make build}
       - name: Upload coverage
         uses: codecov/codecov-action@v2
