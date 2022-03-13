@@ -25,18 +25,22 @@ class Carousel(Directive):
     }
     optional_arguments = 1
 
-    def run(self) -> List[Element]:
-        """Main method."""
+    def images(self) -> List[docutils_image]:
+        """Return list of image nodes used in the directive."""
         directive_content = Element()
         directive_content.document = self.state.document
         self.state.nested_parse(self.content, self.content_offset, directive_content)
+        return list(directive_content.traverse(docutils_image))
 
+    def run(self) -> List[Element]:
+        """Main method."""
+        # Build carousel-inner div.
         items = []
-        for idx, image in enumerate(directive_content.traverse(docutils_image)):
+        for idx, image in enumerate(self.images()):
             image["classes"] += ["d-block", "w-100"]
             items.append(CarouselItemNode(idx == 0, "", image))
-
         inner_div = CarouselInnerNode("", *items)
+
         div_id = self.arguments[0] if self.arguments else ""
         data_ride = "" if "no_data_ride" in self.options else "carousel"
         main_div = CarouselSlideNode(div_id, data_ride, "", inner_div)
