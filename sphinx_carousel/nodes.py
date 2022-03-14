@@ -7,12 +7,12 @@ from sphinx.application import Sphinx
 from sphinx.writers.html5 import HTML5Translator
 
 
-class _BaseNode(nodes.Element):
+class BaseNode(nodes.Element):
     """Base node class."""
 
     @staticmethod
     @abstractmethod
-    def html_visit(writer: HTML5Translator, node: "_BaseNode"):
+    def html_visit(writer: HTML5Translator, node: "BaseNode"):
         """Append opening tags to document body list."""
         raise NotImplementedError
 
@@ -28,7 +28,7 @@ class _BaseNode(nodes.Element):
         app.add_node(cls, html=(cls.html_visit, cls.html_depart))
 
 
-class CarouselSlideNode(_BaseNode):
+class CarouselSlideNode(BaseNode):
     """Main div."""
 
     def __init__(self, div_id: str, data_ride: str = "", rawsource: str = "", *children, **attributes):
@@ -58,7 +58,7 @@ class CarouselSlideNode(_BaseNode):
         writer.body.append("</div>")
 
 
-class CarouselInnerNode(_BaseNode):
+class CarouselInnerNode(BaseNode):
     """Secondary div that contains the image divs."""
 
     @staticmethod
@@ -72,7 +72,7 @@ class CarouselInnerNode(_BaseNode):
         writer.body.append("</div>")
 
 
-class CarouselItemNode(_BaseNode):
+class CarouselItemNode(BaseNode):
     """Div that contains an image."""
 
     def __init__(self, active: bool, rawsource="", *children, **attributes):
@@ -100,7 +100,7 @@ class CarouselItemNode(_BaseNode):
         writer.body.append("</div>")
 
 
-class CarouselControlNode(_BaseNode):
+class CarouselControlNode(BaseNode):
     """Previous/next buttons."""
 
     def __init__(self, div_id: str, prev: bool = False, rawsource: str = "", *children, **attributes):
