@@ -10,19 +10,21 @@ from pathlib import Path
 from typing import Dict, List
 
 from docutils.nodes import Element, image as docutils_image
-from docutils.parsers.rst import Directive, directives
+from docutils.parsers.rst import directives
 from sphinx.application import Sphinx
+from sphinx.util.docutils import SphinxDirective
 
 from sphinx_carousel import __version__, nodes
 
 
-class Carousel(Directive):
+class Carousel(SphinxDirective):
     """Main directive."""
 
     has_content = True
     option_spec = {
-        "no_controls": directives.flag,
         "no_data_ride": directives.flag,
+        "no_controls": directives.flag,
+        "show_controls": directives.flag,
     }
     optional_arguments = 1
 
@@ -32,6 +34,19 @@ class Carousel(Directive):
         directive_content.document = self.state.document
         self.state.nested_parse(self.content, self.content_offset, directive_content)
         return list(directive_content.traverse(docutils_image))
+
+    def config_eval_bool(self, name: str) -> bool:
+        """Evaluate boolean parameters from directive options and Sphinx conf.py entries.
+
+        :param name: Suffix.
+        """
+        if f"show_{name}" in self.options:
+            return True
+        if f"no_{name}" in self.options:
+            return False
+        if self.config[f"carousel_show_{name}"] is True:
+            return True
+        return False
 
     def run(self) -> List[Element]:
         """Main method."""
@@ -47,7 +62,7 @@ class Carousel(Directive):
         child_nodes.append(inner_div)
 
         # Build control buttons.
-        if "no_controls" not in self.options:
+        if self.config_eval_bool("controls"):
             buttons = [nodes.CarouselControlNode(div_id, prev=True), nodes.CarouselControlNode(div_id)]
             child_nodes.extend(buttons)
 
@@ -84,10 +99,11 @@ def setup(app: Sphinx) -> Dict[str, str]:
     :returns: Extension version.
     """
     app.add_config_value("carousel_add_bootstrap_css_js", True, "html")
+    app.add_config_value("carousel_show_controls", False, "html")
     app.add_directive("carousel", Carousel)
+    app.connect("builder-inited", add_static)
     nodes.CarouselControlNode.add_node(app)
     nodes.CarouselInnerNode.add_node(app)
     nodes.CarouselItemNode.add_node(app)
     nodes.CarouselSlideNode.add_node(app)
-    app.connect("builder-inited", add_static)
     return dict(version=__version__)
