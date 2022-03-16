@@ -1,12 +1,14 @@
 """Tests."""
+from typing import List
+
 import pytest
-from bs4 import BeautifulSoup
+from bs4 import element
 
 
 @pytest.mark.sphinx("html", testroot="myst")
-def test(index_html: BeautifulSoup):
+def test(carousels: List[element.Tag]):
     """Test."""
-    carousel_slide = index_html.find_all("div", ["carousel", "slide"])[0]
+    carousel_slide = carousels[0]
     carousel_inner = carousel_slide.find_all("div", ["carousel-inner"])[0]
     carousel_items = carousel_inner.find_all("div", ["carousel-item"])
 

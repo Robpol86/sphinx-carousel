@@ -1,38 +1,62 @@
 """Tests."""
+from typing import List
+
 import pytest
-from bs4 import BeautifulSoup
+from bs4 import element
 
 
 @pytest.mark.sphinx("html", testroot="controls")
-def test(index_html: BeautifulSoup):
+def test(carousels: List[element.Tag]):
     """Test."""
-    carousel = list(index_html.find_all("div", ["carousel", "slide"])[0])
-    assert carousel[0]["class"] == ["carousel-inner"]
-    assert len(carousel) == 1
+    carousel = list(carousels[0])
 
-    carousel = list(index_html.find_all("div", ["carousel", "slide"])[1])
     assert carousel[0]["class"] == ["carousel-inner"]
-    assert len(carousel) == 1
 
-    carousel = list(index_html.find_all("div", ["carousel", "slide"])[2])
+    assert carousel[1]["class"] == ["carousel-control-prev"]
+    assert carousel[1]["data-slide"] == "prev"
+    spans = list(carousel[1])
+    assert spans[0]["class"] == ["carousel-control-prev-icon"]
+    assert spans[1]["class"] == ["sr-only"]
+    assert spans[1].text == "Previous"
+
+    assert carousel[2]["class"] == ["carousel-control-next"]
+    assert carousel[2]["data-slide"] == "next"
+    spans = list(carousel[2])
+    assert spans[0]["class"] == ["carousel-control-next-icon"]
+    assert spans[1]["class"] == ["sr-only"]
+    assert spans[1].text == "Next"
+
+
+@pytest.mark.sphinx("html", testroot="controls")
+def test_toggle(carousels: List[element.Tag]):
+    """Test."""
+    carousel = list(carousels[0])
     assert carousel[0]["class"] == ["carousel-inner"]
     assert carousel[1]["class"] == ["carousel-control-prev"]
     assert carousel[2]["class"] == ["carousel-control-next"]
+
+    carousel = list(carousels[1])
+    assert carousel[0]["class"] == ["carousel-inner"]
+    assert len(carousel) == 1
+
+    carousel = list(carousels[2])
+    assert carousel[0]["class"] == ["carousel-inner"]
+    assert len(carousel) == 1
 
 
 @pytest.mark.sphinx("html", testroot="controls-conf")
-def test_conf(index_html: BeautifulSoup):
+def test_toggle_conf(carousels: List[element.Tag]):
     """Test."""
-    carousel = list(index_html.find_all("div", ["carousel", "slide"])[0])
+    carousel = list(carousels[0])
     assert carousel[0]["class"] == ["carousel-inner"]
     assert carousel[1]["class"] == ["carousel-control-prev"]
     assert carousel[2]["class"] == ["carousel-control-next"]
 
-    carousel = list(index_html.find_all("div", ["carousel", "slide"])[1])
+    carousel = list(carousels[1])
     assert carousel[0]["class"] == ["carousel-inner"]
     assert len(carousel) == 1
 
-    carousel = list(index_html.find_all("div", ["carousel", "slide"])[2])
+    carousel = list(carousels[2])
     assert carousel[0]["class"] == ["carousel-inner"]
     assert carousel[1]["class"] == ["carousel-control-prev"]
     assert carousel[2]["class"] == ["carousel-control-next"]

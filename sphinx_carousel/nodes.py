@@ -132,7 +132,8 @@ class CarouselControlNode(BaseNode):
         }
         writer.body.append(writer.starttag(node, "span", "", **attributes_span))
         writer.body.append("</span>")
-        writer.body.append(writer.starttag(node, "span", "", **{"sr-only": "Previous" if node.prev else "Next"}))
+        writer.body.append(writer.starttag(node, "span", "", **{"CLASS": "sr-only"}))
+        writer.body.append("Previous" if node.prev else "Next")
         writer.body.append("</span>")
 
     @staticmethod
