@@ -1,7 +1,7 @@
 # sphinx-carousel
 
 A Sphinx extension for creating slideshows using
-[Bootstrap Carousels](https://getbootstrap.com/docs/4.6/components/carousel/).
+[Bootstrap 5 Carousels](https://getbootstrap.com/docs/5.1/components/carousel/).
 
 * Python 3.6, 3.7, 3.8, and 3.9 supported on Linux, macOS, and Windows.
 
@@ -42,3 +42,10 @@ extensions = ["sphinx_carousel.carousel"]
 ```
 
 TODO https://github.com/executablebooks/sphinx-panels
+
+## TODOs
+
+* Use minified
+* Investigate style overrides
+* Investigate missing padding below carousel (maybe need to use nodes.container?)
+* Make main div ID deterministic

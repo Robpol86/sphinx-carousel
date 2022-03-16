@@ -82,8 +82,8 @@ def copy_static(app: Sphinx):
     static_out = Path(app.builder.outdir) / "_static"
     static_out.mkdir(exist_ok=True)
 
-    copy_asset_file(str(static_in / "bootstrap.min.css"), str(static_out))
-    copy_asset_file(str(static_in / "bootstrap.min.js"), str(static_out))
+    copy_asset_file(str(static_in / "bootstrap.css"), str(static_out))
+    copy_asset_file(str(static_in / "bootstrap.js"), str(static_out))
 
 
 def include_static_on_demand(app: Sphinx, _: str, __: str, ___: dict, doctree: document):
@@ -98,8 +98,8 @@ def include_static_on_demand(app: Sphinx, _: str, __: str, ___: dict, doctree: d
     if not app.config.carousel_add_bootstrap_css_js:
         return
     if doctree and doctree.traverse(nodes.CarouselMainNode):
-        app.add_css_file("bootstrap.min.css")
-        app.add_js_file("bootstrap.min.js")
+        app.add_css_file("bootstrap.css")
+        app.add_js_file("bootstrap.js")
 
 
 def setup(app: Sphinx) -> Dict[str, str]:

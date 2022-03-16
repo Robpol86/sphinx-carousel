@@ -13,17 +13,17 @@ def test(carousels: List[element.Tag]):
     assert carousel[0]["class"] == ["carousel-inner"]
 
     assert carousel[1]["class"] == ["carousel-control-prev"]
-    assert carousel[1]["data-slide"] == "prev"
+    assert carousel[1]["data-bs-slide"] == "prev"
     spans = list(carousel[1])
     assert spans[0]["class"] == ["carousel-control-prev-icon"]
-    assert spans[1]["class"] == ["sr-only"]
+    assert spans[1]["class"] == ["visually-hidden"]
     assert spans[1].text == "Previous"
 
     assert carousel[2]["class"] == ["carousel-control-next"]
-    assert carousel[2]["data-slide"] == "next"
+    assert carousel[2]["data-bs-slide"] == "next"
     spans = list(carousel[2])
     assert spans[0]["class"] == ["carousel-control-next-icon"]
-    assert spans[1]["class"] == ["sr-only"]
+    assert spans[1]["class"] == ["visually-hidden"]
     assert spans[1].text == "Next"
 
 
@@ -31,7 +31,7 @@ def test(carousels: List[element.Tag]):
 def test_uuid_match(carousel: element.Tag):
     """Test."""
     carousel_main_id = carousel["id"]
-    control_target = carousel.find_next("button")["data-target"]
+    control_target = carousel.find_next("button")["data-bs-target"]
     assert control_target == f"#{carousel_main_id}"
 
 
