@@ -48,4 +48,3 @@ TODO https://github.com/executablebooks/sphinx-panels
 * Use minified
 * Investigate style overrides
 * Investigate missing padding below carousel (maybe need to use nodes.container?)
-* Make main div ID deterministic
