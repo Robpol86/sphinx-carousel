@@ -7,7 +7,7 @@ from sphinx.application import Sphinx
 from sphinx.writers.html5 import HTML5Translator
 
 
-class BaseNode(nodes.Element):
+class BaseNode(nodes.Element, nodes.General):
     """Base node class."""
 
     @staticmethod
@@ -35,7 +35,7 @@ class CarouselMainNode(BaseNode):
         """Constructor.
 
         :param div_id: <div id="...">.
-        :param data_ride: <div data-ride="...">.
+        :param data_ride: <div data-bs-ride="...">.
         :param rawsource: Passed to parent class.
         :param children: Passed to parent class.
         :param attributes: Passed to parent class.
@@ -49,7 +49,7 @@ class CarouselMainNode(BaseNode):
         """Append opening tags to document body list."""
         attributes = {"CLASS": "carousel slide", "ids": [node.div_id]}
         if node.data_ride:
-            attributes["data-ride"] = node.data_ride
+            attributes["data-bs-ride"] = node.data_ride
         writer.body.append(writer.starttag(node, "div", "", **attributes))
 
     @staticmethod
@@ -106,7 +106,7 @@ class CarouselControlNode(BaseNode):
     def __init__(self, div_id: str, prev: bool = False, rawsource: str = "", *children, **attributes):
         """Constructor.
 
-        :param div_id: <div id="...">.
+        :param div_id: Corresponding CarouselMainNode div ID.
         :param prev: Previous button if True, else Next button.
         :param rawsource: Passed to parent class.
         :param children: Passed to parent class.
@@ -122,8 +122,8 @@ class CarouselControlNode(BaseNode):
         attributes_button = {
             "CLASS": f"carousel-control-{'prev' if node.prev else 'next'}",
             "type": "button",
-            "data-target": f"#{node.div_id}",
-            "data-slide": "prev" if node.prev else "next",
+            "data-bs-target": f"#{node.div_id}",
+            "data-bs-slide": "prev" if node.prev else "next",
         }
         writer.body.append(writer.starttag(node, "button", "", **attributes_button))
         attributes_span = {
@@ -132,7 +132,7 @@ class CarouselControlNode(BaseNode):
         }
         writer.body.append(writer.starttag(node, "span", "", **attributes_span))
         writer.body.append("</span>")
-        writer.body.append(writer.starttag(node, "span", "", **{"CLASS": "sr-only"}))
+        writer.body.append(writer.starttag(node, "span", "", **{"CLASS": "visually-hidden"}))
         writer.body.append("Previous" if node.prev else "Next")
         writer.body.append("</span>")
 
