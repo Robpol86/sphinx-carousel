@@ -28,7 +28,7 @@ def test(carousels: List[element.Tag]):
 
 
 @pytest.mark.sphinx("html", testroot="controls")
-def test_uuid_match(carousel: element.Tag):
+def test_div_id_match(carousel: element.Tag):
     """Test."""
     carousel_main_id = carousel["id"]
     control_target = carousel.find_next("button")["data-bs-target"]

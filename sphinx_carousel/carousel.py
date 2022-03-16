@@ -4,7 +4,6 @@ https://sphinx-carousel.readthedocs.io
 https://github.com/Robpol86/sphinx-carousel
 https://pypi.org/project/sphinx-carousel
 """
-import uuid
 from pathlib import Path
 from typing import Dict, List
 
@@ -49,7 +48,7 @@ class Carousel(SphinxDirective):
 
     def run(self) -> List[Element]:
         """Main method."""
-        div_id = f"carousel-{uuid.uuid4()}"
+        main_div_id = f"carousel-{self.env.new_serialno('carousel')}"
         child_nodes = []
 
         # Build carousel-inner div.
@@ -62,11 +61,11 @@ class Carousel(SphinxDirective):
 
         # Build control buttons.
         if self.config_eval_bool("controls"):
-            buttons = [nodes.CarouselControlNode(div_id, prev=True), nodes.CarouselControlNode(div_id)]
+            buttons = [nodes.CarouselControlNode(main_div_id, prev=True), nodes.CarouselControlNode(main_div_id)]
             child_nodes.extend(buttons)
 
         data_ride = "" if "no_data_ride" in self.options else "carousel"
-        main_div = nodes.CarouselMainNode(div_id, data_ride, "", *child_nodes)
+        main_div = nodes.CarouselMainNode(main_div_id, data_ride, "", *child_nodes)
         return [main_div]
 
 
