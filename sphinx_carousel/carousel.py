@@ -4,15 +4,15 @@ https://sphinx-carousel.readthedocs.io
 https://github.com/Robpol86/sphinx-carousel
 https://pypi.org/project/sphinx-carousel
 """
-import shutil
 import uuid
 from pathlib import Path
 from typing import Dict, List
 
-from docutils.nodes import Element, image as docutils_image
+from docutils.nodes import document, Element, image as docutils_image
 from docutils.parsers.rst import directives
 from sphinx.application import Sphinx
 from sphinx.util.docutils import SphinxDirective
+from sphinx.util.fileutil import copy_asset_file
 
 from sphinx_carousel import __version__, nodes
 
@@ -67,28 +67,40 @@ class Carousel(SphinxDirective):
             child_nodes.extend(buttons)
 
         data_ride = "" if "no_data_ride" in self.options else "carousel"
-        main_div = nodes.CarouselSlideNode(div_id, data_ride, "", *child_nodes)
+        main_div = nodes.CarouselMainNode(div_id, data_ride, "", *child_nodes)
         return [main_div]
 
 
-def add_static(app: Sphinx):
-    """Conditionally add CSS and JS files.
+def copy_static(app: Sphinx):
+    """Install CSS and JS files into the output directory.
 
     :param app: Sphinx application object.
     """
-    if not app.config.carousel_add_bootstrap_css_js:
+    if not app.config.carousel_add_bootstrap_css_js or app.builder.format != "html":
         return
 
     static_in = Path(__file__).parent / "_static"
-    static_out = Path(app.outdir) / "_static_carousel"
+    static_out = Path(app.builder.outdir) / "_static"
     static_out.mkdir(exist_ok=True)
-    app.config.html_static_path.append(str(static_out))
 
-    shutil.copy(static_in / "bootstrap.min.css", static_out / "bootstrap.min.css")
-    app.add_css_file("bootstrap.min.css")
+    copy_asset_file(str(static_in / "bootstrap.min.css"), str(static_out))
+    copy_asset_file(str(static_in / "bootstrap.min.js"), str(static_out))
 
-    shutil.copy(static_in / "bootstrap.min.js", static_out / "bootstrap.min.js")
-    app.add_js_file("bootstrap.min.js")
+
+def include_static_on_demand(app: Sphinx, _: str, __: str, ___: dict, doctree: document):
+    """Add CSS and JS files to <head /> only on specific pages that use the directive.
+
+    :param app: Sphinx application object.
+    :param _: Unused.
+    :param __: Unused.
+    :param ___: Unused.
+    :param doctree: Tree of docutils nodes.
+    """
+    if not app.config.carousel_add_bootstrap_css_js:
+        return
+    if doctree and doctree.traverse(nodes.CarouselMainNode):
+        app.add_css_file("bootstrap.min.css")
+        app.add_js_file("bootstrap.min.js")
 
 
 def setup(app: Sphinx) -> Dict[str, str]:
@@ -101,9 +113,10 @@ def setup(app: Sphinx) -> Dict[str, str]:
     app.add_config_value("carousel_add_bootstrap_css_js", True, "html")
     app.add_config_value("carousel_show_controls", False, "html")
     app.add_directive("carousel", Carousel)
-    app.connect("builder-inited", add_static)
+    app.connect("builder-inited", copy_static)
+    app.connect("html-page-context", include_static_on_demand)
     nodes.CarouselControlNode.add_node(app)
     nodes.CarouselInnerNode.add_node(app)
     nodes.CarouselItemNode.add_node(app)
-    nodes.CarouselSlideNode.add_node(app)
+    nodes.CarouselMainNode.add_node(app)
     return dict(version=__version__)
