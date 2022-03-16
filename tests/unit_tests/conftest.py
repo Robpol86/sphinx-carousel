@@ -1,8 +1,9 @@
 """pytest fixtures."""
 from pathlib import Path
+from typing import List
 
 import pytest
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 from sphinx.testing.path import path
 from sphinx.testing.util import SphinxTestApp
 
@@ -27,3 +28,9 @@ def _index_html(sphinx_app: SphinxTestApp) -> BeautifulSoup:
     """Read and parse generated test index.html."""
     text = (Path(sphinx_app.outdir) / "index.html").read_text(encoding="utf8")
     return BeautifulSoup(text, "html.parser")
+
+
+@pytest.fixture()
+def carousels(index_html: BeautifulSoup) -> List[element.Tag]:
+    """Return all top-level carousels in index.html."""
+    return index_html.find_all("div", ["carousel", "slide"])

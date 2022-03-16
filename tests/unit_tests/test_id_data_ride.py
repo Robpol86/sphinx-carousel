@@ -1,10 +1,12 @@
 """Tests."""
+from typing import List
+
 import pytest
-from bs4 import BeautifulSoup
+from bs4 import element
 
 
 @pytest.mark.sphinx("html", testroot="id-data-ride")
-def test_id(index_html: BeautifulSoup):
+def test_id(carousels: List[element.Tag]):
     """Test.
 
     <div id="customId" class="carousel slide" data-ride="carousel">
@@ -15,7 +17,7 @@ def test_id(index_html: BeautifulSoup):
       </div>
     </div>
     """
-    carousel_slide = index_html.find_all("div", ["carousel", "slide"])[0]
+    carousel_slide = carousels[0]
     assert carousel_slide.has_attr("id")
     assert carousel_slide["id"] == "customId"
     assert carousel_slide.has_attr("data-ride")
@@ -32,7 +34,7 @@ def test_id(index_html: BeautifulSoup):
 
 
 @pytest.mark.sphinx("html", testroot="id-data-ride")
-def test_no_data_ride(index_html: BeautifulSoup):
+def test_no_data_ride(carousels: List[element.Tag]):
     """Test.
 
     <div class="carousel slide">
@@ -43,7 +45,7 @@ def test_no_data_ride(index_html: BeautifulSoup):
       </div>
     </div>
     """
-    carousel_slide = index_html.find_all("div", ["carousel", "slide"])[1]
+    carousel_slide = carousels[1]
     assert carousel_slide.has_attr("id")
     assert len(carousel_slide["id"]) == 45
     assert carousel_slide["id"].startswith("carousel-")
