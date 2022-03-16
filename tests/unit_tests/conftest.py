@@ -30,6 +30,13 @@ def _index_html(sphinx_app: SphinxTestApp) -> BeautifulSoup:
     return BeautifulSoup(text, "html.parser")
 
 
+@pytest.fixture(name="unused_html")
+def _unused_html(sphinx_app: SphinxTestApp) -> BeautifulSoup:
+    """Read and parse generated test unused.html."""
+    text = (Path(sphinx_app.outdir) / "unused.html").read_text(encoding="utf8")
+    return BeautifulSoup(text, "html.parser")
+
+
 @pytest.fixture()
 def carousels(index_html: BeautifulSoup) -> List[element.Tag]:
     """Return all top-level carousels in index.html."""

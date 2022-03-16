@@ -28,7 +28,7 @@ class BaseNode(nodes.Element):
         app.add_node(cls, html=(cls.html_visit, cls.html_depart))
 
 
-class CarouselSlideNode(BaseNode):
+class CarouselMainNode(BaseNode):
     """Main div."""
 
     def __init__(self, div_id: str, data_ride: str = "", rawsource: str = "", *children, **attributes):
@@ -45,7 +45,7 @@ class CarouselSlideNode(BaseNode):
         self.data_ride = data_ride
 
     @staticmethod
-    def html_visit(writer: HTML5Translator, node: "CarouselSlideNode"):
+    def html_visit(writer: HTML5Translator, node: "CarouselMainNode"):
         """Append opening tags to document body list."""
         attributes = {"CLASS": "carousel slide", "ids": [node.div_id]}
         if node.data_ride:
