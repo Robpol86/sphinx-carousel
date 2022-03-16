@@ -28,6 +28,14 @@ def test(carousels: List[element.Tag]):
 
 
 @pytest.mark.sphinx("html", testroot="controls")
+def test_uuid_match(carousel: element.Tag):
+    """Test."""
+    carousel_main_id = carousel["id"]
+    control_target = carousel.find_next("button")["data-target"]
+    assert control_target == f"#{carousel_main_id}"
+
+
+@pytest.mark.sphinx("html", testroot="controls")
 def test_toggle(carousels: List[element.Tag]):
     """Test."""
     carousel = list(carousels[0])
