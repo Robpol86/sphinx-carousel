@@ -37,7 +37,13 @@ def _unused_html(sphinx_app: SphinxTestApp) -> BeautifulSoup:
     return BeautifulSoup(text, "html.parser")
 
 
-@pytest.fixture()
-def carousels(index_html: BeautifulSoup) -> List[element.Tag]:
+@pytest.fixture(name="carousels")
+def _carousels(index_html: BeautifulSoup) -> List[element.Tag]:
     """Return all top-level carousels in index.html."""
     return index_html.find_all("div", ["carousel", "slide"])
+
+
+@pytest.fixture()
+def carousel(carousels: List[element.Tag]) -> element.Tag:
+    """Return first carousel in index.html."""
+    return carousels[0]

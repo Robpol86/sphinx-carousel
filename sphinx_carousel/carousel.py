@@ -26,7 +26,6 @@ class Carousel(SphinxDirective):
         "no_controls": directives.flag,
         "show_controls": directives.flag,
     }
-    optional_arguments = 1
 
     def images(self) -> List[docutils_image]:
         """Return list of image nodes used in the directive."""
@@ -50,7 +49,7 @@ class Carousel(SphinxDirective):
 
     def run(self) -> List[Element]:
         """Main method."""
-        div_id = self.arguments[0] if self.arguments else f"carousel-{uuid.uuid4()}"
+        div_id = f"carousel-{uuid.uuid4()}"
         child_nodes = []
 
         # Build carousel-inner div.
