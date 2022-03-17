@@ -49,7 +49,8 @@ class Carousel(SphinxDirective):
     def run(self) -> List[Element]:
         """Main method."""
         main_div_id = f"carousel-{self.env.new_serialno('carousel')}"
-        child_nodes = []
+        data_ride = "" if "no_data_ride" in self.options else "carousel"
+        main_div = nodes.CarouselMainNode(main_div_id, data_ride)
 
         # Build carousel-inner div.
         items = []
@@ -57,15 +58,13 @@ class Carousel(SphinxDirective):
             image["classes"] += ["d-block", "w-100"]
             items.append(nodes.CarouselItemNode(idx == 0, "", image))
         inner_div = nodes.CarouselInnerNode("", *items)
-        child_nodes.append(inner_div)
+        main_div.append(inner_div)
 
         # Build control buttons.
         if self.config_eval_bool("controls"):
-            buttons = [nodes.CarouselControlNode(main_div_id, prev=True), nodes.CarouselControlNode(main_div_id)]
-            child_nodes.extend(buttons)
+            main_div.append(nodes.CarouselControlNode(main_div_id, prev=True))
+            main_div.append(nodes.CarouselControlNode(main_div_id))
 
-        data_ride = "" if "no_data_ride" in self.options else "carousel"
-        main_div = nodes.CarouselMainNode(main_div_id, data_ride, "", *child_nodes)
         return [main_div]
 
 
