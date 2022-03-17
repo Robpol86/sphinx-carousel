@@ -24,6 +24,8 @@ class Carousel(SphinxDirective):
         "no_data_ride": directives.flag,
         "no_controls": directives.flag,
         "show_controls": directives.flag,
+        "no_indicators": directives.flag,
+        "show_indicators": directives.flag,
     }
 
     def images(self) -> List[docutils_image]:
@@ -51,10 +53,15 @@ class Carousel(SphinxDirective):
         main_div_id = f"carousel-{self.env.new_serialno('carousel')}"
         data_ride = "" if "no_data_ride" in self.options else "carousel"
         main_div = nodes.CarouselMainNode(main_div_id, data_ride)
+        images = self.images()
+
+        # Build indicators.
+        if self.config_eval_bool("indicators"):
+            main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images)))
 
         # Build carousel-inner div.
         items = []
-        for idx, image in enumerate(self.images()):
+        for idx, image in enumerate(images):
             image["classes"] += ["d-block", "w-100"]
             items.append(nodes.CarouselItemNode(idx == 0, "", image))
         inner_div = nodes.CarouselInnerNode("", *items)
@@ -109,10 +116,12 @@ def setup(app: Sphinx) -> Dict[str, str]:
     """
     app.add_config_value("carousel_add_bootstrap_css_js", True, "html")
     app.add_config_value("carousel_show_controls", False, "html")
+    app.add_config_value("carousel_show_indicators", False, "html")
     app.add_directive("carousel", Carousel)
     app.connect("builder-inited", copy_static)
     app.connect("html-page-context", include_static_on_demand)
     nodes.CarouselControlNode.add_node(app)
+    nodes.CarouselIndicatorsNode.add_node(app)
     nodes.CarouselInnerNode.add_node(app)
     nodes.CarouselItemNode.add_node(app)
     nodes.CarouselMainNode.add_node(app)
