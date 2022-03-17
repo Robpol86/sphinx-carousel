@@ -140,3 +140,42 @@ class CarouselControlNode(BaseNode):
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
         writer.body.append("</button>")
+
+
+class CarouselIndicatorsNode(BaseNode):
+    """Indicators."""
+
+    def __init__(self, div_id: str, count: int, rawsource: str = "", *children, **attributes):
+        """Constructor.
+
+        :param div_id: Corresponding CarouselMainNode div ID.
+        :param count: Number of images.
+        :param rawsource: Passed to parent class.
+        :param children: Passed to parent class.
+        :param attributes: Passed to parent class.
+        """
+        super().__init__(rawsource, *children, **attributes)
+        self.div_id = div_id
+        self.count = count
+
+    @staticmethod
+    def html_visit(writer: HTML5Translator, node: "CarouselIndicatorsNode"):
+        """Append opening tags to document body list."""
+        writer.body.append(writer.starttag(node, "div", "", **{"CLASS": "carousel-indicators"}))
+        for i in range(node.count):
+            attributes = {
+                "type": "button",
+                "data-bs-target": f"#{node.div_id}",
+                "data-bs-slide-to": f"{i}",
+                "aria-label": f"Slide {i+1}",
+            }
+            if i == 0:
+                attributes["CLASS"] = "active"
+                attributes["aria-current"] = "true"
+            writer.body.append(writer.starttag(node, "button", "", **attributes))
+            writer.body.append("</button>")
+
+    @staticmethod
+    def html_depart(writer: HTML5Translator, _):
+        """Append closing tags to document body list."""
+        writer.body.append("</div>")
