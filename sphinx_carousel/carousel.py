@@ -63,7 +63,7 @@ class Carousel(SphinxDirective):
         items = []
         for idx, image in enumerate(images):
             image["classes"] += ["d-block", "w-100"]
-            items.append(nodes.CarouselItemNode(idx == 0, "", image))
+            items.append(nodes.CarouselItemNode(idx == 0, "", image.parent if image.parent.hasattr("refuri") else image))
         inner_div = nodes.CarouselInnerNode("", *items)
         main_div.append(inner_div)
 
