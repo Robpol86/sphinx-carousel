@@ -9,6 +9,7 @@ Usage
     :show_indicators:
 
     .. image:: https://i.imgur.com/fmJnevTl.jpg
+        :target: https://i.imgur.com/fmJnevT.jpg
     .. image:: https://i.imgur.com/ppGH90Jl.jpg
     .. image:: https://i.imgur.com/fWyn9A2l.jpg
 
