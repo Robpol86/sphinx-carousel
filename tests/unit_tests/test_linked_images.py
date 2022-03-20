@@ -22,9 +22,9 @@ def test(carousel: element.Tag):
 
     item = carousel_items[0]
     assert item["class"] == ["carousel-item", "active"]
-    a_href = item.next
+    a_href = item.find_next()
     assert a_href["href"] == "https://imgur.com/ppGH90J"
-    img = a_href.next
+    img = a_href.find_next()
     assert img["src"] == "https://i.imgur.com/ppGH90Jl.jpg"
     assert img["class"] == ["d-block", "w-100"]
     assert img["alt"] == img["src"]
