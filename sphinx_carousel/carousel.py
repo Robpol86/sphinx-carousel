@@ -29,7 +29,7 @@ class Carousel(SphinxDirective):
     }
 
     def images(self) -> List[Tuple[docutils_image, Optional[reference]]]:
-        """Return list of image nodes and other associated data used in the directive.
+        """Return list of image nodes along with other associated data.
 
         :return: Image node and parent reference node if :target: was specified.
         """
