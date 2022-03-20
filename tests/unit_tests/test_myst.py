@@ -11,7 +11,7 @@ def test(carousel: element.Tag):
 
     item = carousel_items[0]
     assert item["class"] == ["carousel-item", "active"]
-    img = item.find_all("img")[0]
+    img = item.find_next()
     assert img["src"] == "https://i.imgur.com/fmJnevTl.jpg"
     assert img["class"] == ["d-block", "w-100"]
     assert img["alt"] == img["src"]

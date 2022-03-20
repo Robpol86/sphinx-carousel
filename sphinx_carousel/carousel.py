@@ -5,9 +5,9 @@ https://github.com/Robpol86/sphinx-carousel
 https://pypi.org/project/sphinx-carousel
 """
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 
-from docutils.nodes import document, Element, image as docutils_image
+from docutils.nodes import document, Element, image as docutils_image, reference
 from docutils.parsers.rst import directives
 from sphinx.application import Sphinx
 from sphinx.util.docutils import SphinxDirective
@@ -28,12 +28,23 @@ class Carousel(SphinxDirective):
         "show_indicators": directives.flag,
     }
 
-    def images(self) -> List[docutils_image]:
-        """Return list of image nodes used in the directive."""
+    def images(self) -> List[Tuple[docutils_image, Optional[reference]]]:
+        """Return list of image nodes along with other associated data.
+
+        :return: Image node and parent reference node if :target: was specified.
+        """
         directive_content = Element()
         directive_content.document = self.state.document
         self.state.nested_parse(self.content, self.content_offset, directive_content)
-        return list(directive_content.traverse(docutils_image))
+
+        images = []
+        for image in directive_content.traverse(docutils_image):
+            # Handle linked images.
+            linked_image = image.parent if image.parent.hasattr("refuri") else None
+            # Done with image.
+            images.append((image, linked_image))
+
+        return images
 
     def config_eval_bool(self, name: str) -> bool:
         """Evaluate boolean parameters from directive options and Sphinx conf.py entries.
@@ -61,9 +72,9 @@ class Carousel(SphinxDirective):
 
         # Build carousel-inner div.
         items = []
-        for idx, image in enumerate(images):
+        for idx, (image, linked_image) in enumerate(images):
             image["classes"] += ["d-block", "w-100"]
-            items.append(nodes.CarouselItemNode(idx == 0, "", image.parent if image.parent.hasattr("refuri") else image))
+            items.append(nodes.CarouselItemNode(idx == 0, "", linked_image or image))
         inner_div = nodes.CarouselInnerNode("", *items)
         main_div.append(inner_div)
 
