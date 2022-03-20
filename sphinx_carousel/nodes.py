@@ -179,3 +179,38 @@ class CarouselIndicatorsNode(BaseNode):
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
         writer.body.append("</div>")
+
+
+class CarouselCaptionNode(BaseNode):
+    """Captions."""
+
+    def __init__(self, title: str = "", description: str = "", rawsource: str = "", *children, **attributes):
+        """Constructor.
+
+        :param title: Caption heading.
+        :param description: Caption paragraph.
+        :param rawsource: Passed to parent class.
+        :param children: Passed to parent class.
+        :param attributes: Passed to parent class.
+        """
+        super().__init__(rawsource, *children, **attributes)
+        self.title = title
+        self.description = description
+
+    @staticmethod
+    def html_visit(writer: HTML5Translator, node: "CarouselCaptionNode"):
+        """Append opening tags to document body list."""
+        writer.body.append(writer.starttag(node, "div", "", **{"CLASS": "carousel-caption d-none d-md-block"}))
+        if node.title:
+            writer.body.append(writer.starttag(node, "h5", ""))
+            writer.body.append(node.title)
+            writer.body.append("</h5>")
+        if node.description:
+            writer.body.append(writer.starttag(node, "p", ""))
+            writer.body.append(node.description)
+            writer.body.append("</p>")
+
+    @staticmethod
+    def html_depart(writer: HTML5Translator, _):
+        """Append closing tags to document body list."""
+        writer.body.append("</div>")
