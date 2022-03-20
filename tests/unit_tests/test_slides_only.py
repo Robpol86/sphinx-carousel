@@ -34,3 +34,17 @@ def test(carousel: element.Tag):
     assert img["src"] == "https://i.imgur.com/ppGH90Jl.jpg"
     assert img["class"] == ["d-block", "w-100"]
     assert img["alt"] == img["src"]
+
+    item = carousel_items[2]
+    assert item["class"] == ["carousel-item"]
+    img = item.find_next()
+    assert img["src"] == "_images/local.jpg"
+    assert img["class"] == ["d-block", "w-100"]
+    assert img["alt"] == "Local Alt"
+
+    item = carousel_items[3]
+    assert item["class"] == ["carousel-item"]
+    img = item.find_next()
+    assert img["src"] == "https://i.imgur.com/fmJnevTl.jpg"
+    assert img["class"] == ["d-block", "w-100"]
+    assert img["alt"] == img["src"]

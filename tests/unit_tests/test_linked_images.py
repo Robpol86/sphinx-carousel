@@ -28,3 +28,12 @@ def test(carousel: element.Tag):
     assert img["src"] == "https://i.imgur.com/ppGH90Jl.jpg"
     assert img["class"] == ["d-block", "w-100"]
     assert img["alt"] == img["src"]
+
+    item = carousel_items[1]
+    assert item["class"] == ["carousel-item"]
+    a_href = item.find_next()
+    assert a_href["href"] == "https://imgur.com/fmJnevT"
+    img = a_href.find_next()
+    assert img["src"] == "https://i.imgur.com/fmJnevTl.jpg"
+    assert img["class"] == ["d-block", "w-100"]
+    assert img["alt"] == img["src"]

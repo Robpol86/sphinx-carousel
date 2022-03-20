@@ -48,3 +48,7 @@ TODO https://github.com/executablebooks/sphinx-panels
 * Use minified
 * Investigate style overrides
 * Investigate missing padding below carousel (maybe need to use nodes.container?)
+* Look at captions on mobile
+* Test links on mobile
+* Test very large caption.
+* Caption styling

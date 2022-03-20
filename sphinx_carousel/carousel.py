@@ -7,7 +7,7 @@ https://pypi.org/project/sphinx-carousel
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from docutils.nodes import document, Element, image as docutils_image, reference
+from docutils.nodes import caption, document, Element, image as docutils_image, legend, reference
 from docutils.parsers.rst import directives
 from sphinx.application import Sphinx
 from sphinx.util.docutils import SphinxDirective
@@ -28,11 +28,12 @@ class Carousel(SphinxDirective):
         "show_indicators": directives.flag,
     }
 
-    def images(self) -> List[Tuple[docutils_image, Optional[reference]]]:
-        """Return list of image nodes along with other associated data.
+    def images(self) -> List[Tuple[docutils_image, Optional[reference], Optional[str], Optional[str]]]:
+        """Return list of image/figure nodes along with other associated data.
 
-        :return: Image node and parent reference node if :target: was specified.
+        :return: Image node, parent reference node if :target: was specified, and figure's title/description if available.
         """
+        # Create temporary empty document to dump nested image/figure directives into.
         directive_content = Element()
         directive_content.document = self.state.document
         self.state.nested_parse(self.content, self.content_offset, directive_content)
@@ -41,8 +42,13 @@ class Carousel(SphinxDirective):
         for image in directive_content.traverse(docutils_image):
             # Handle linked images.
             linked_image = image.parent if image.parent.hasattr("refuri") else None
+            # Handle captions.
+            node = (linked_image or image).next_node(caption, siblings=True, ascend=False, descend=False)
+            title = node.astext() if node else None
+            node = (linked_image or image).next_node(legend, siblings=True, ascend=False, descend=False)
+            description = node.astext() if node else None
             # Done with image.
-            images.append((image, linked_image))
+            images.append((image, linked_image, title, description))
 
         return images
 
@@ -72,9 +78,12 @@ class Carousel(SphinxDirective):
 
         # Build carousel-inner div.
         items = []
-        for idx, (image, linked_image) in enumerate(images):
+        for idx, (image, linked_image, title, description) in enumerate(images):
             image["classes"] += ["d-block", "w-100"]
-            items.append(nodes.CarouselItemNode(idx == 0, "", linked_image or image))
+            child_nodes = [linked_image or image]
+            if title or description:
+                child_nodes.append(nodes.CarouselCaptionNode(title, description))
+            items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes))
         inner_div = nodes.CarouselInnerNode("", *items)
         main_div.append(inner_div)
 
@@ -131,6 +140,7 @@ def setup(app: Sphinx) -> Dict[str, str]:
     app.add_directive("carousel", Carousel)
     app.connect("builder-inited", copy_static)
     app.connect("html-page-context", include_static_on_demand)
+    nodes.CarouselCaptionNode.add_node(app)
     nodes.CarouselControlNode.add_node(app)
     nodes.CarouselIndicatorsNode.add_node(app)
     nodes.CarouselInnerNode.add_node(app)
