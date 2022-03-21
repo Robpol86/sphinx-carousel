@@ -40,7 +40,7 @@ def _unused_html(sphinx_app: SphinxTestApp) -> BeautifulSoup:
 @pytest.fixture(name="carousels")
 def _carousels(index_html: BeautifulSoup) -> List[element.Tag]:
     """Return all top-level carousels in index.html."""
-    return index_html.find_all("div", ["carousel", "slide"])
+    return index_html.find_all("div", ["carousel", "scbs-carousel"])  # carousel OR scbs-carousel
 
 
 @pytest.fixture()

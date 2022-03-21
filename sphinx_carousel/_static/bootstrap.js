@@ -880,20 +880,6 @@
   const EVENT_DRAG_START = `dragstart${EVENT_KEY}`;
   const EVENT_LOAD_DATA_API = `load${EVENT_KEY}${DATA_API_KEY}`;
   const EVENT_CLICK_DATA_API = `click${EVENT_KEY}${DATA_API_KEY}`;
-  const CLASS_NAME_CAROUSEL = 'carousel';
-  const CLASS_NAME_ACTIVE = 'active';
-  const CLASS_NAME_SLIDE = 'slide';
-  const CLASS_NAME_END = 'carousel-item-end';
-  const CLASS_NAME_START = 'carousel-item-start';
-  const CLASS_NAME_NEXT = 'carousel-item-next';
-  const CLASS_NAME_PREV = 'carousel-item-prev';
-  const CLASS_NAME_POINTER_EVENT = 'pointer-event';
-  const SELECTOR_ACTIVE = '.active';
-  const SELECTOR_ACTIVE_ITEM = '.active.carousel-item';
-  const SELECTOR_ITEM = '.carousel-item';
-  const SELECTOR_ITEM_IMG = '.carousel-item img';
-  const SELECTOR_NEXT_PREV = '.carousel-item-next, .carousel-item-prev';
-  const SELECTOR_INDICATORS = '.carousel-indicators';
   const SELECTOR_INDICATOR = '[data-bs-target]';
   const SELECTOR_DATA_SLIDE = '[data-bs-slide], [data-bs-slide-to]';
   const SELECTOR_DATA_RIDE = '[data-bs-ride="carousel"]';
@@ -917,7 +903,7 @@
       this.touchStartX = 0;
       this.touchDeltaX = 0;
       this._config = this._getConfig(config);
-      this._indicatorsElement = SelectorEngine.findOne(SELECTOR_INDICATORS, this._element);
+      this._indicatorsElement = SelectorEngine.findOne(".scbs-carousel-indicators", this._element);
       this._touchSupported = 'ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0;
       this._pointerEvent = Boolean(window.PointerEvent);
 
@@ -955,7 +941,7 @@
         this._isPaused = true;
       }
 
-      if (SelectorEngine.findOne(SELECTOR_NEXT_PREV, this._element)) {
+      if (SelectorEngine.findOne(".scbs-carousel-item-next, .scbs-carousel-item-prev", this._element)) {
         triggerTransitionEnd(this._element);
         this.cycle(true);
       }
@@ -982,7 +968,7 @@
     }
 
     to(index) {
-      this._activeElement = SelectorEngine.findOne(SELECTOR_ACTIVE_ITEM, this._element);
+      this._activeElement = SelectorEngine.findOne(".scbs-active.scbs-carousel-item", this._element);
 
       const activeIndex = this._getItemIndex(this._activeElement);
 
@@ -1091,7 +1077,7 @@
         }
       };
 
-      SelectorEngine.find(SELECTOR_ITEM_IMG, this._element).forEach(itemImg => {
+      SelectorEngine.find(".scbs-carousel-item img", this._element).forEach(itemImg => {
         EventHandler.on(itemImg, EVENT_DRAG_START, event => event.preventDefault());
       });
 
@@ -1099,7 +1085,7 @@
         EventHandler.on(this._element, EVENT_POINTERDOWN, event => start(event));
         EventHandler.on(this._element, EVENT_POINTERUP, event => end(event));
 
-        this._element.classList.add(CLASS_NAME_POINTER_EVENT);
+        this._element.classList.add("scbs-pointer-event");
       } else {
         EventHandler.on(this._element, EVENT_TOUCHSTART, event => start(event));
         EventHandler.on(this._element, EVENT_TOUCHMOVE, event => move(event));
@@ -1122,7 +1108,7 @@
     }
 
     _getItemIndex(element) {
-      this._items = element && element.parentNode ? SelectorEngine.find(SELECTOR_ITEM, element.parentNode) : [];
+      this._items = element && element.parentNode ? SelectorEngine.find(".scbs-carousel-item", element.parentNode) : [];
       return this._items.indexOf(element);
     }
 
@@ -1134,7 +1120,7 @@
     _triggerSlideEvent(relatedTarget, eventDirectionName) {
       const targetIndex = this._getItemIndex(relatedTarget);
 
-      const fromIndex = this._getItemIndex(SelectorEngine.findOne(SELECTOR_ACTIVE_ITEM, this._element));
+      const fromIndex = this._getItemIndex(SelectorEngine.findOne(".scbs-active.scbs-carousel-item", this._element));
 
       return EventHandler.trigger(this._element, EVENT_SLIDE, {
         relatedTarget,
@@ -1146,14 +1132,14 @@
 
     _setActiveIndicatorElement(element) {
       if (this._indicatorsElement) {
-        const activeIndicator = SelectorEngine.findOne(SELECTOR_ACTIVE, this._indicatorsElement);
-        activeIndicator.classList.remove(CLASS_NAME_ACTIVE);
+        const activeIndicator = SelectorEngine.findOne(".scbs-active", this._indicatorsElement);
+        activeIndicator.classList.remove("scbs-active");
         activeIndicator.removeAttribute('aria-current');
         const indicators = SelectorEngine.find(SELECTOR_INDICATOR, this._indicatorsElement);
 
         for (let i = 0; i < indicators.length; i++) {
           if (Number.parseInt(indicators[i].getAttribute('data-bs-slide-to'), 10) === this._getItemIndex(element)) {
-            indicators[i].classList.add(CLASS_NAME_ACTIVE);
+            indicators[i].classList.add("scbs-active");
             indicators[i].setAttribute('aria-current', 'true');
             break;
           }
@@ -1162,7 +1148,7 @@
     }
 
     _updateInterval() {
-      const element = this._activeElement || SelectorEngine.findOne(SELECTOR_ACTIVE_ITEM, this._element);
+      const element = this._activeElement || SelectorEngine.findOne(".scbs-active.scbs-carousel-item", this._element);
 
       if (!element) {
         return;
@@ -1181,7 +1167,7 @@
     _slide(directionOrOrder, element) {
       const order = this._directionToOrder(directionOrOrder);
 
-      const activeElement = SelectorEngine.findOne(SELECTOR_ACTIVE_ITEM, this._element);
+      const activeElement = SelectorEngine.findOne(".scbs-active.scbs-carousel-item", this._element);
 
       const activeElementIndex = this._getItemIndex(activeElement);
 
@@ -1191,12 +1177,12 @@
 
       const isCycling = Boolean(this._interval);
       const isNext = order === ORDER_NEXT;
-      const directionalClassName = isNext ? CLASS_NAME_START : CLASS_NAME_END;
-      const orderClassName = isNext ? CLASS_NAME_NEXT : CLASS_NAME_PREV;
+      const directionalClassName = isNext ? "scbs-carousel-item-start" : "scbs-carousel-item-end";
+      const orderClassName = isNext ? "scbs-carousel-item-next" : "scbs-carousel-item-prev";
 
       const eventDirectionName = this._orderToDirection(order);
 
-      if (nextElement && nextElement.classList.contains(CLASS_NAME_ACTIVE)) {
+      if (nextElement && nextElement.classList.contains("scbs-active")) {
         this._isSliding = false;
         return;
       }
@@ -1235,7 +1221,7 @@
         });
       };
 
-      if (this._element.classList.contains(CLASS_NAME_SLIDE)) {
+      if (this._element.classList.contains("scbs-slide")) {
         nextElement.classList.add(orderClassName);
         reflow(nextElement);
         activeElement.classList.add(directionalClassName);
@@ -1243,16 +1229,16 @@
 
         const completeCallBack = () => {
           nextElement.classList.remove(directionalClassName, orderClassName);
-          nextElement.classList.add(CLASS_NAME_ACTIVE);
-          activeElement.classList.remove(CLASS_NAME_ACTIVE, orderClassName, directionalClassName);
+          nextElement.classList.add("scbs-active");
+          activeElement.classList.remove("scbs-active", orderClassName, directionalClassName);
           this._isSliding = false;
           setTimeout(triggerSlidEvent, 0);
         };
 
         this._queueCallback(completeCallBack, activeElement, true);
       } else {
-        activeElement.classList.remove(CLASS_NAME_ACTIVE);
-        nextElement.classList.add(CLASS_NAME_ACTIVE);
+        activeElement.classList.remove("scbs-active");
+        nextElement.classList.add("scbs-active");
         this._isSliding = false;
         triggerSlidEvent();
       }
@@ -1324,7 +1310,7 @@
     static dataApiClickHandler(event) {
       const target = getElementFromSelector(this);
 
-      if (!target || !target.classList.contains(CLASS_NAME_CAROUSEL)) {
+      if (!target || !target.classList.contains("scbs-carousel")) {
         return;
       }
 

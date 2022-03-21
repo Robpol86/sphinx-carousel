@@ -68,31 +68,33 @@ class Carousel(SphinxDirective):
     def run(self) -> List[Element]:
         """Main method."""
         main_div_id = f"carousel-{self.env.new_serialno('carousel')}"
+        prefix = self.config["carousel_bootstrap_prefix"]
         main_div = nodes.CarouselMainNode(
             main_div_id,
             data_ride="" if "no_data_ride" in self.options else "carousel",
+            prefix=prefix,
         )
         images = self.images()
 
         # Build indicators.
         if self.config_eval_bool("indicators"):
-            main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images)))
+            main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images), prefix=prefix))
 
         # Build carousel-inner div.
         items = []
         for idx, (image, linked_image, title, description) in enumerate(images):
-            image["classes"] += ["d-block", "w-100"]
+            image["classes"] += [f"{prefix}d-block", f"{prefix}w-100"]
             child_nodes = [linked_image or image]
             if title or description:
-                child_nodes.append(nodes.CarouselCaptionNode(title, description))
-            items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes))
-        inner_div = nodes.CarouselInnerNode("", *items)
+                child_nodes.append(nodes.CarouselCaptionNode(title, description, prefix=prefix))
+            items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes, prefix=prefix))
+        inner_div = nodes.CarouselInnerNode("", *items, prefix=prefix)
         main_div.append(inner_div)
 
         # Build control buttons.
         if self.config_eval_bool("controls"):
-            main_div.append(nodes.CarouselControlNode(main_div_id, prev=True))
-            main_div.append(nodes.CarouselControlNode(main_div_id))
+            main_div.append(nodes.CarouselControlNode(main_div_id, prefix=prefix, prev=True))
+            main_div.append(nodes.CarouselControlNode(main_div_id, prefix=prefix))
 
         return [main_div]
 
@@ -137,6 +139,7 @@ def setup(app: Sphinx) -> Dict[str, str]:
     :returns: Extension version.
     """
     app.add_config_value("carousel_bootstrap_add_css_js", True, "html")
+    app.add_config_value("carousel_bootstrap_prefix", "scbs-", "html")
     app.add_config_value("carousel_show_controls", False, "html")
     app.add_config_value("carousel_show_indicators", False, "html")
     app.add_directive("carousel", Carousel)
