@@ -9,9 +9,9 @@ from bs4 import element
 def test(carousels: List[element.Tag]):
     """Test."""
     carousel = list(carousels[0])
-    assert carousel[1]["class"] == ["carousel-inner"]
+    assert carousel[1]["class"] == ["scbs-carousel-inner"]
 
-    assert carousel[0]["class"] == ["carousel-indicators"]
+    assert carousel[0]["class"] == ["scbs-carousel-indicators"]
     buttons = list(carousel[0])
     assert len(buttons) == 3
 
@@ -23,7 +23,7 @@ def test(carousels: List[element.Tag]):
     assert buttons[1]["aria-label"] == "Slide 2"
     assert buttons[2]["aria-label"] == "Slide 3"
 
-    assert buttons[0].get("class") == ["active"]
+    assert buttons[0].get("class") == ["scbs-active"]
     assert buttons[1].has_attr("class") is False
     assert buttons[2].has_attr("class") is False
 
@@ -44,15 +44,15 @@ def test_div_id_match(carousel: element.Tag):
 def test_toggle(carousels: List[element.Tag]):
     """Test."""
     carousel = list(carousels[0])
-    assert carousel[0]["class"] == ["carousel-indicators"]
-    assert carousel[1]["class"] == ["carousel-inner"]
+    assert carousel[0]["class"] == ["scbs-carousel-indicators"]
+    assert carousel[1]["class"] == ["scbs-carousel-inner"]
 
     carousel = list(carousels[1])
-    assert carousel[0]["class"] == ["carousel-inner"]
+    assert carousel[0]["class"] == ["scbs-carousel-inner"]
     assert len(carousel) == 1
 
     carousel = list(carousels[2])
-    assert carousel[0]["class"] == ["carousel-inner"]
+    assert carousel[0]["class"] == ["scbs-carousel-inner"]
     assert len(carousel) == 1
 
 
@@ -60,13 +60,13 @@ def test_toggle(carousels: List[element.Tag]):
 def test_toggle_conf(carousels: List[element.Tag]):
     """Test."""
     carousel = list(carousels[0])
-    assert carousel[0]["class"] == ["carousel-indicators"]
-    assert carousel[1]["class"] == ["carousel-inner"]
+    assert carousel[0]["class"] == ["scbs-carousel-indicators"]
+    assert carousel[1]["class"] == ["scbs-carousel-inner"]
 
     carousel = list(carousels[1])
-    assert carousel[0]["class"] == ["carousel-inner"]
+    assert carousel[0]["class"] == ["scbs-carousel-inner"]
     assert len(carousel) == 1
 
     carousel = list(carousels[2])
-    assert carousel[0]["class"] == ["carousel-indicators"]
-    assert carousel[1]["class"] == ["carousel-inner"]
+    assert carousel[0]["class"] == ["scbs-carousel-indicators"]
+    assert carousel[1]["class"] == ["scbs-carousel-inner"]

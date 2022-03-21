@@ -1,5 +1,9 @@
 'use strict'
 
+const prefixer = require('postcss-prefix-selector')
+const autoprefixer = require('autoprefixer')
+const rtlcss = require('rtlcss')
+
 module.exports = ctx => {
   return {
     map: ctx.file.dirname.includes('examples') ?
@@ -9,11 +13,22 @@ module.exports = ctx => {
         annotation: true,
         sourcesContent: true
       },
-    plugins: {
-      autoprefixer: {
+    plugins: [
+      prefixer({
+        prefix: 'scbs-',
+        transform: function (prefix, selector) {
+          let newSelector = ''
+          for (let part of selector.split(/(?=[.])/g)) {
+            if (part.startsWith('.')) part = '.' + prefix + part.substring(1)
+            newSelector += part
+          }
+          return newSelector
+        },
+      }),
+      autoprefixer({
         cascade: false
-      },
-      rtlcss: ctx.env === 'RTL' ? {} : false
-    }
+      }),
+      ctx.env === 'RTL' ? rtlcss() : false,
+    ]
   }
 }

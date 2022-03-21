@@ -12,6 +12,26 @@ const ESM = process.env.ESM === 'true'
 let fileDest = `bootstrap${ESM ? '.esm' : ''}`
 const external = ['@popperjs/core']
 const plugins = [
+  replace({
+    include: ['node_modules/bootstrap/js/src/carousel.js'],
+    preventAssignment: true,
+    values: {
+      'CLASS_NAME_CAROUSEL': '"scbs-carousel"',
+      'CLASS_NAME_ACTIVE': '"scbs-active"',
+      'CLASS_NAME_SLIDE': '"scbs-slide"',
+      'CLASS_NAME_END': '"scbs-carousel-item-end"',
+      'CLASS_NAME_START': '"scbs-carousel-item-start"',
+      'CLASS_NAME_NEXT': '"scbs-carousel-item-next"',
+      'CLASS_NAME_PREV': '"scbs-carousel-item-prev"',
+      'CLASS_NAME_POINTER_EVENT': '"scbs-pointer-event"',
+      'SELECTOR_ACTIVE': '".scbs-active"',
+      'SELECTOR_ACTIVE_ITEM': '".scbs-active.scbs-carousel-item"',
+      'SELECTOR_ITEM': '".scbs-carousel-item"',
+      'SELECTOR_ITEM_IMG': '".scbs-carousel-item img"',
+      'SELECTOR_NEXT_PREV': '".scbs-carousel-item-next, .scbs-carousel-item-prev"',
+      'SELECTOR_INDICATORS': '".scbs-carousel-indicators"',
+    }
+  }),
   babel({
     // Only transpile our source code
     exclude: /node_modules\/(?!bootstrap\/).*/,

@@ -10,6 +10,17 @@ from sphinx.writers.html5 import HTML5Translator
 class BaseNode(nodes.Element, nodes.General):
     """Base node class."""
 
+    def __init__(self, rawsource: str = "", *children, prefix: str = "", **attributes):
+        """Constructor.
+
+        :param rawsource: Passed to parent class.
+        :param children: Passed to parent class.
+        :param prefix: Prefix each HTML class tag with this.
+        :param attributes: Passed to parent class.
+        """
+        super().__init__(rawsource, *children, **attributes)
+        self.prefix = prefix
+
     @staticmethod
     @abstractmethod
     def html_visit(writer: HTML5Translator, node: "BaseNode"):
@@ -46,7 +57,7 @@ class CarouselMainNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselMainNode"):
         """Append opening tags to document body list."""
-        attributes = {"CLASS": "carousel slide", "ids": [node.div_id]}
+        attributes = {"CLASS": f"{node.prefix}carousel {node.prefix}slide", "ids": [node.div_id]}
         if node.data_ride:
             attributes["data-bs-ride"] = node.data_ride
         writer.body.append(writer.starttag(node, "div", "", **attributes))
@@ -63,7 +74,7 @@ class CarouselInnerNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselInnerNode"):
         """Append opening tags to document body list."""
-        writer.body.append(writer.starttag(node, "div", "", CLASS="carousel-inner"))
+        writer.body.append(writer.starttag(node, "div", "", CLASS=f"{node.prefix}carousel-inner"))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -87,9 +98,9 @@ class CarouselItemNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselItemNode"):
         """Append opening tags to document body list."""
-        classes = ["carousel-item"]
+        classes = [f"{node.prefix}carousel-item"]
         if node.active:
-            classes.append("active")
+            classes.append(f"{node.prefix}active")
         writer.body.append(writer.starttag(node, "div", "", CLASS=" ".join(classes)))
 
     @staticmethod
@@ -117,19 +128,19 @@ class CarouselControlNode(BaseNode):
     def html_visit(writer: HTML5Translator, node: "CarouselControlNode"):
         """Append opening tags to document body list."""
         attributes_button = {
-            "CLASS": f"carousel-control-{'prev' if node.prev else 'next'}",
+            "CLASS": f"{node.prefix}carousel-control-{'prev' if node.prev else 'next'}",
             "type": "button",
             "data-bs-target": f"#{node.div_id}",
             "data-bs-slide": "prev" if node.prev else "next",
         }
         writer.body.append(writer.starttag(node, "button", "", **attributes_button))
         attributes_span = {
-            "CLASS": f"carousel-control-{'prev' if node.prev else 'next'}-icon",
+            "CLASS": f"{node.prefix}carousel-control-{'prev' if node.prev else 'next'}-icon",
             "aria-hidden": "true",
         }
         writer.body.append(writer.starttag(node, "span", "", **attributes_span))
         writer.body.append("</span>")
-        writer.body.append(writer.starttag(node, "span", "", CLASS="visually-hidden"))
+        writer.body.append(writer.starttag(node, "span", "", CLASS=f"{node.prefix}visually-hidden"))
         writer.body.append("Previous" if node.prev else "Next")
         writer.body.append("</span>")
 
@@ -157,7 +168,7 @@ class CarouselIndicatorsNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselIndicatorsNode"):
         """Append opening tags to document body list."""
-        writer.body.append(writer.starttag(node, "div", "", CLASS="carousel-indicators"))
+        writer.body.append(writer.starttag(node, "div", "", CLASS=f"{node.prefix}carousel-indicators"))
         for i in range(node.count):
             attributes = {
                 "type": "button",
@@ -166,7 +177,7 @@ class CarouselIndicatorsNode(BaseNode):
                 "aria-label": f"Slide {i+1}",
             }
             if i == 0:
-                attributes["CLASS"] = "active"
+                attributes["CLASS"] = f"{node.prefix}active"
                 attributes["aria-current"] = "true"
             writer.body.append(writer.starttag(node, "button", "", **attributes))
             writer.body.append("</button>")
@@ -195,7 +206,7 @@ class CarouselCaptionNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselCaptionNode"):
         """Append opening tags to document body list."""
-        classes = ["carousel-caption", "d-none", "d-md-block"]
+        classes = [f"{node.prefix}carousel-caption", f"{node.prefix}d-none", f"{node.prefix}d-md-block"]
         writer.body.append(writer.starttag(node, "div", "", CLASS=" ".join(classes)))
         if node.title:
             writer.body.append(writer.starttag(node, "h5", ""))
