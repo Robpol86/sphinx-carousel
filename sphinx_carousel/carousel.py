@@ -68,8 +68,10 @@ class Carousel(SphinxDirective):
     def run(self) -> List[Element]:
         """Main method."""
         main_div_id = f"carousel-{self.env.new_serialno('carousel')}"
-        data_ride = "" if "no_data_ride" in self.options else "carousel"
-        main_div = nodes.CarouselMainNode(main_div_id, data_ride)
+        main_div = nodes.CarouselMainNode(
+            main_div_id,
+            data_ride="" if "no_data_ride" in self.options else "carousel",
+        )
         images = self.images()
 
         # Build indicators.
@@ -100,7 +102,7 @@ def copy_static(app: Sphinx):
 
     :param app: Sphinx application object.
     """
-    if not app.config.carousel_add_bootstrap_css_js or app.builder.format != "html":
+    if not app.config.carousel_bootstrap_add_css_js or app.builder.format != "html":
         return
 
     static_in = Path(__file__).parent / "_static"
@@ -120,7 +122,7 @@ def include_static_on_demand(app: Sphinx, _: str, __: str, ___: dict, doctree: d
     :param ___: Unused.
     :param doctree: Tree of docutils nodes.
     """
-    if not app.config.carousel_add_bootstrap_css_js:
+    if not app.config.carousel_bootstrap_add_css_js:
         return
     if doctree and doctree.traverse(nodes.CarouselMainNode):
         app.add_css_file("bootstrap.css")
@@ -134,7 +136,7 @@ def setup(app: Sphinx) -> Dict[str, str]:
 
     :returns: Extension version.
     """
-    app.add_config_value("carousel_add_bootstrap_css_js", True, "html")
+    app.add_config_value("carousel_bootstrap_add_css_js", True, "html")
     app.add_config_value("carousel_show_controls", False, "html")
     app.add_config_value("carousel_show_indicators", False, "html")
     app.add_directive("carousel", Carousel)

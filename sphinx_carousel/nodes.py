@@ -31,16 +31,15 @@ class BaseNode(nodes.Element, nodes.General):
 class CarouselMainNode(BaseNode):
     """Main div."""
 
-    def __init__(self, div_id: str, data_ride: str = "", rawsource: str = "", *children, **attributes):
+    def __init__(self, div_id: str, data_ride: str = "", *args, **kwargs):
         """Constructor.
 
         :param div_id: <div id="...">.
         :param data_ride: <div data-bs-ride="...">.
-        :param rawsource: Passed to parent class.
-        :param children: Passed to parent class.
-        :param attributes: Passed to parent class.
+        :param args: Passed to parent class.
+        :param kwargs: Passed to parent class.
         """
-        super().__init__(rawsource, *children, **attributes)
+        super().__init__(*args, **kwargs)
         self.div_id = div_id
         self.data_ride = data_ride
 
@@ -64,7 +63,7 @@ class CarouselInnerNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselInnerNode"):
         """Append opening tags to document body list."""
-        writer.body.append(writer.starttag(node, "div", "", **{"CLASS": "carousel-inner"}))
+        writer.body.append(writer.starttag(node, "div", "", CLASS="carousel-inner"))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -75,15 +74,14 @@ class CarouselInnerNode(BaseNode):
 class CarouselItemNode(BaseNode):
     """Div that contains an image."""
 
-    def __init__(self, active: bool, rawsource="", *children, **attributes):
+    def __init__(self, active: bool, *args, **kwargs):
         """Constructor.
 
         :param active: Append active class to div, needed for first image.
-        :param rawsource: Passed to parent class.
-        :param children: Passed to parent class.
-        :param attributes: Passed to parent class.
+        :param args: Passed to parent class.
+        :param kwargs: Passed to parent class.
         """
-        super().__init__(rawsource, *children, **attributes)
+        super().__init__(*args, **kwargs)
         self.active = active
 
     @staticmethod
@@ -92,7 +90,7 @@ class CarouselItemNode(BaseNode):
         classes = ["carousel-item"]
         if node.active:
             classes.append("active")
-        writer.body.append(writer.starttag(node, "div", "", **{"CLASS": " ".join(classes)}))
+        writer.body.append(writer.starttag(node, "div", "", CLASS=" ".join(classes)))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -103,16 +101,15 @@ class CarouselItemNode(BaseNode):
 class CarouselControlNode(BaseNode):
     """Previous/next buttons."""
 
-    def __init__(self, div_id: str, prev: bool = False, rawsource: str = "", *children, **attributes):
+    def __init__(self, div_id: str, prev: bool = False, *args, **kwargs):
         """Constructor.
 
         :param div_id: Corresponding CarouselMainNode div ID.
         :param prev: Previous button if True, else Next button.
-        :param rawsource: Passed to parent class.
-        :param children: Passed to parent class.
-        :param attributes: Passed to parent class.
+        :param args: Passed to parent class.
+        :param kwargs: Passed to parent class.
         """
-        super().__init__(rawsource, *children, **attributes)
+        super().__init__(*args, **kwargs)
         self.div_id = div_id
         self.prev = prev
 
@@ -132,7 +129,7 @@ class CarouselControlNode(BaseNode):
         }
         writer.body.append(writer.starttag(node, "span", "", **attributes_span))
         writer.body.append("</span>")
-        writer.body.append(writer.starttag(node, "span", "", **{"CLASS": "visually-hidden"}))
+        writer.body.append(writer.starttag(node, "span", "", CLASS="visually-hidden"))
         writer.body.append("Previous" if node.prev else "Next")
         writer.body.append("</span>")
 
@@ -145,23 +142,22 @@ class CarouselControlNode(BaseNode):
 class CarouselIndicatorsNode(BaseNode):
     """Indicators."""
 
-    def __init__(self, div_id: str, count: int, rawsource: str = "", *children, **attributes):
+    def __init__(self, div_id: str, count: int, *args, **kwargs):
         """Constructor.
 
         :param div_id: Corresponding CarouselMainNode div ID.
         :param count: Number of images.
-        :param rawsource: Passed to parent class.
-        :param children: Passed to parent class.
-        :param attributes: Passed to parent class.
+        :param args: Passed to parent class.
+        :param kwargs: Passed to parent class.
         """
-        super().__init__(rawsource, *children, **attributes)
+        super().__init__(*args, **kwargs)
         self.div_id = div_id
         self.count = count
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselIndicatorsNode"):
         """Append opening tags to document body list."""
-        writer.body.append(writer.starttag(node, "div", "", **{"CLASS": "carousel-indicators"}))
+        writer.body.append(writer.starttag(node, "div", "", CLASS="carousel-indicators"))
         for i in range(node.count):
             attributes = {
                 "type": "button",
@@ -184,23 +180,23 @@ class CarouselIndicatorsNode(BaseNode):
 class CarouselCaptionNode(BaseNode):
     """Captions."""
 
-    def __init__(self, title: str = "", description: str = "", rawsource: str = "", *children, **attributes):
+    def __init__(self, title: str = "", description: str = "", *args, **kwargs):
         """Constructor.
 
         :param title: Caption heading.
         :param description: Caption paragraph.
-        :param rawsource: Passed to parent class.
-        :param children: Passed to parent class.
-        :param attributes: Passed to parent class.
+        :param args: Passed to parent class.
+        :param kwargs: Passed to parent class.
         """
-        super().__init__(rawsource, *children, **attributes)
+        super().__init__(*args, **kwargs)
         self.title = title
         self.description = description
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselCaptionNode"):
         """Append opening tags to document body list."""
-        writer.body.append(writer.starttag(node, "div", "", **{"CLASS": "carousel-caption d-none d-md-block"}))
+        classes = ["carousel-caption", "d-none", "d-md-block"]
+        writer.body.append(writer.starttag(node, "div", "", CLASS=" ".join(classes)))
         if node.title:
             writer.body.append(writer.starttag(node, "h5", ""))
             writer.body.append(node.title)
