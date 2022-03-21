@@ -4,4 +4,4 @@ extensions = ["sphinx_carousel.carousel"]
 html_theme = "basic"
 master_doc = "index"
 nitpicky = True
-carousel_add_bootstrap_css_js = False
+carousel_bootstrap_add_css_js = False
