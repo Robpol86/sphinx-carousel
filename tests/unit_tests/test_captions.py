@@ -60,7 +60,7 @@ def test(carousel: element.Tag):
     carousel_caption = img.find_next_sibling()
     assert carousel_caption["class"][0] == "scbs-carousel-caption"
     title = carousel_caption.find_next()
-    assert title.text == "Just the title."
+    assert title.get_text(strip=True) == "Just the title."
     assert title.find_next_sibling() is None
 
     item = carousel_items[1]
@@ -70,10 +70,10 @@ def test(carousel: element.Tag):
     carousel_caption = img.find_next_sibling()
     assert carousel_caption["class"][0] == "scbs-carousel-caption"
     title = carousel_caption.find_next()
-    assert title.text == "Title and Description"
+    assert title.get_text(strip=True) == "Title and Description"
     description = title.find_next_sibling()
-    assert description.text.startswith("Lorem ipsum dolor sit amet")
-    assert description.text.endswith("magna aliqua.")
+    assert description.get_text(strip=True).startswith("Lorem ipsum dolor sit amet")
+    assert description.get_text(strip=True).endswith("magna aliqua.")
 
     item = carousel_items[2]
     assert item["class"] == ["scbs-carousel-item"]
@@ -84,7 +84,7 @@ def test(carousel: element.Tag):
     carousel_caption = a_href.find_next_sibling()
     assert carousel_caption["class"][0] == "scbs-carousel-caption"
     title = carousel_caption.find_next()
-    assert title.text == "Linked with title."
+    assert title.get_text(strip=True) == "Linked with title."
     assert title.find_next_sibling() is None
 
     item = carousel_items[3]
@@ -96,7 +96,7 @@ def test(carousel: element.Tag):
     carousel_caption = a_href.find_next_sibling()
     assert carousel_caption["class"][0] == "scbs-carousel-caption"
     title = carousel_caption.find_next()
-    assert title.text == "Linked with title and description."
+    assert title.get_text(strip=True) == "Linked with title and description."
     description = title.find_next_sibling()
-    assert description.text.startswith("LOREM IPSUM DOLOR SIT AMET")
-    assert description.text.endswith("MAGNA ALIQUA.")
+    assert description.get_text(strip=True).startswith("LOREM IPSUM DOLOR SIT AMET")
+    assert description.get_text(strip=True).endswith("MAGNA ALIQUA.")

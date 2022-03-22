@@ -59,12 +59,12 @@ class CarouselMainNode(BaseNode):
     def html_visit(writer: HTML5Translator, node: "CarouselMainNode"):
         """Append opening tags to document body list."""
         attributes = dict(node.attributes, CLASS=f"{node.prefix}carousel {node.prefix}slide", ids=[node.div_id])
-        writer.body.append(writer.starttag(node, "div", "", **attributes))
+        writer.body.append(writer.starttag(node, "div", **attributes))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
-        writer.body.append("</div>")
+        writer.body.append("</div>\n")
 
 
 class CarouselInnerNode(BaseNode):
@@ -73,12 +73,12 @@ class CarouselInnerNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselInnerNode"):
         """Append opening tags to document body list."""
-        writer.body.append(writer.starttag(node, "div", "", CLASS=f"{node.prefix}carousel-inner"))
+        writer.body.append(writer.starttag(node, "div", CLASS=f"{node.prefix}carousel-inner"))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
-        writer.body.append("</div>")
+        writer.body.append("</div>\n")
 
 
 class CarouselItemNode(BaseNode):
@@ -100,12 +100,12 @@ class CarouselItemNode(BaseNode):
         classes = [f"{node.prefix}carousel-item"]
         if node.active:
             classes.append(f"{node.prefix}active")
-        writer.body.append(writer.starttag(node, "div", "", CLASS=" ".join(classes)))
+        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
-        writer.body.append("</div>")
+        writer.body.append("</div>\n")
 
 
 class CarouselControlNode(BaseNode):
@@ -132,21 +132,20 @@ class CarouselControlNode(BaseNode):
             "data-bs-target": f"#{node.div_id}",
             "data-bs-slide": "prev" if node.prev else "next",
         }
-        writer.body.append(writer.starttag(node, "button", "", **attributes_button))
+        writer.body.append(writer.starttag(node, "button", **attributes_button))
         attributes_span = {
             "CLASS": f"{node.prefix}carousel-control-{'prev' if node.prev else 'next'}-icon",
             "aria-hidden": "true",
         }
-        writer.body.append(writer.starttag(node, "span", "", **attributes_span))
-        writer.body.append("</span>")
-        writer.body.append(writer.starttag(node, "span", "", CLASS=f"{node.prefix}visually-hidden"))
+        writer.body.append(writer.emptytag(node, "span", **attributes_span))
+        writer.body.append(writer.starttag(node, "span", CLASS=f"{node.prefix}visually-hidden"))
         writer.body.append("Previous" if node.prev else "Next")
-        writer.body.append("</span>")
+        writer.body.append("\n</span>\n")
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
-        writer.body.append("</button>")
+        writer.body.append("</button>\n")
 
 
 class CarouselIndicatorsNode(BaseNode):
@@ -167,7 +166,7 @@ class CarouselIndicatorsNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselIndicatorsNode"):
         """Append opening tags to document body list."""
-        writer.body.append(writer.starttag(node, "div", "", CLASS=f"{node.prefix}carousel-indicators"))
+        writer.body.append(writer.starttag(node, "div", CLASS=f"{node.prefix}carousel-indicators"))
         for i in range(node.count):
             attributes = {
                 "type": "button",
@@ -178,13 +177,12 @@ class CarouselIndicatorsNode(BaseNode):
             if i == 0:
                 attributes["CLASS"] = f"{node.prefix}active"
                 attributes["aria-current"] = "true"
-            writer.body.append(writer.starttag(node, "button", "", **attributes))
-            writer.body.append("</button>")
+            writer.body.append(writer.emptytag(node, "button", **attributes))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
-        writer.body.append("</div>")
+        writer.body.append("</div>\n")
 
 
 class CarouselCaptionNode(BaseNode):
@@ -206,18 +204,18 @@ class CarouselCaptionNode(BaseNode):
     def html_visit(writer: HTML5Translator, node: "CarouselCaptionNode"):
         """Append opening tags to document body list."""
         classes = [f"{node.prefix}carousel-caption", f"{node.prefix}d-none", f"{node.prefix}d-md-block"]
-        writer.body.append(writer.starttag(node, "div", "", CLASS=" ".join(classes)))
+        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
 
-        writer.body.append(writer.starttag(node, "h5", ""))
+        writer.body.append(writer.starttag(node, "h5"))
         writer.body.append(node.title)
-        writer.body.append("</h5>")
+        writer.body.append("\n</h5>\n")
 
         if node.description:
-            writer.body.append(writer.starttag(node, "p", ""))
+            writer.body.append(writer.starttag(node, "p"))
             writer.body.append(node.description)
-            writer.body.append("</p>")
+            writer.body.append("\n</p>\n")
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
-        writer.body.append("</div>")
+        writer.body.append("</div>\n")
