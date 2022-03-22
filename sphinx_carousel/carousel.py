@@ -73,33 +73,32 @@ class Carousel(SphinxDirective):
     def run(self) -> List[Element]:
         """Main method."""
         main_div_id = f"carousel-{self.env.new_serialno('carousel')}"
-        prefix = self.config["carousel_bootstrap_prefix"]
         main_div = nodes.CarouselMainNode(
             main_div_id,
             attributes={k: v for k, v in self.options.items() if k.startswith("data-")},
-            prefix=prefix,
         )
         images = self.images()
 
         # Build indicators.
         if self.config_read_flag("indicators"):
-            main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images), prefix=prefix))
+            main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images)))
 
         # Build carousel-inner div.
+        prefix = self.config["carousel_bootstrap_prefix"]
         items = []
         for idx, (image, linked_image, title, description) in enumerate(images):
             image["classes"] += [f"{prefix}d-block", f"{prefix}w-100"]
             child_nodes = [linked_image or image]
             if title or description:
-                child_nodes.append(nodes.CarouselCaptionNode(title, description, prefix=prefix))
-            items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes, prefix=prefix))
-        inner_div = nodes.CarouselInnerNode("", *items, prefix=prefix)
+                child_nodes.append(nodes.CarouselCaptionNode(title, description))
+            items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes))
+        inner_div = nodes.CarouselInnerNode("", *items)
         main_div.append(inner_div)
 
         # Build control buttons.
         if self.config_read_flag("controls"):
-            main_div.append(nodes.CarouselControlNode(main_div_id, prefix=prefix, prev=True))
-            main_div.append(nodes.CarouselControlNode(main_div_id, prefix=prefix))
+            main_div.append(nodes.CarouselControlNode(main_div_id, prev=True))
+            main_div.append(nodes.CarouselControlNode(main_div_id))
 
         return [main_div]
 
