@@ -5,6 +5,7 @@ Usage
 =====
 
 .. carousel::
+    :data-bs-interval: false
     :show_controls:
     :show_indicators:
 

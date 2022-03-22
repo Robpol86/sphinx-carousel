@@ -21,7 +21,12 @@ class Carousel(SphinxDirective):
 
     has_content = True
     option_spec = {
-        "no_data_ride": directives.flag,
+        "data-bs-interval": directives.unchanged,
+        "data-bs-keyboard": directives.unchanged,
+        "data-bs-pause": directives.unchanged,
+        "data-bs-ride": directives.unchanged,
+        "data-bs-wrap": directives.unchanged,
+        "data-bs-touch": directives.unchanged,
         "no_controls": directives.flag,
         "show_controls": directives.flag,
         "no_indicators": directives.flag,
@@ -52,8 +57,8 @@ class Carousel(SphinxDirective):
 
         return images
 
-    def config_eval_bool(self, name: str) -> bool:
-        """Evaluate boolean parameters from directive options and Sphinx conf.py entries.
+    def config_read_flag(self, name: str) -> bool:
+        """Evaluate a directive flag option and the corresponding Sphinx conf.py entry as fallback.
 
         :param name: Suffix.
         """
@@ -71,13 +76,13 @@ class Carousel(SphinxDirective):
         prefix = self.config["carousel_bootstrap_prefix"]
         main_div = nodes.CarouselMainNode(
             main_div_id,
-            data_ride="" if "no_data_ride" in self.options else "carousel",
+            attributes={k: v for k, v in self.options.items() if k.startswith("data-")},
             prefix=prefix,
         )
         images = self.images()
 
         # Build indicators.
-        if self.config_eval_bool("indicators"):
+        if self.config_read_flag("indicators"):
             main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images), prefix=prefix))
 
         # Build carousel-inner div.
@@ -92,7 +97,7 @@ class Carousel(SphinxDirective):
         main_div.append(inner_div)
 
         # Build control buttons.
-        if self.config_eval_bool("controls"):
+        if self.config_read_flag("controls"):
             main_div.append(nodes.CarouselControlNode(main_div_id, prefix=prefix, prev=True))
             main_div.append(nodes.CarouselControlNode(main_div_id, prefix=prefix))
 
