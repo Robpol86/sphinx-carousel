@@ -48,8 +48,9 @@ class CarouselMainNode(BaseNode):
     def html_visit(writer: HTML5Translator, node: "CarouselMainNode"):
         """Append opening tags to document body list."""
         prefix = writer.config["carousel_bootstrap_prefix"]
-        attributes = dict(node.attributes, CLASS=f"{prefix}carousel {prefix}slide", ids=[node.div_id])
-        writer.body.append(writer.starttag(node, "div", **attributes))
+        writer.body.append(
+            writer.starttag(node, "div", CLASS=f"{prefix}carousel {prefix}slide", ids=[node.div_id], **node.attributes)
+        )
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -120,19 +121,24 @@ class CarouselControlNode(BaseNode):
         """Append opening tags to document body list."""
         prefix = writer.config["carousel_bootstrap_prefix"]
 
-        attributes_button = {
-            "CLASS": f"{prefix}carousel-control-{'prev' if node.prev else 'next'}",
-            "type": "button",
-            "data-bs-target": f"#{node.div_id}",
-            "data-bs-slide": "prev" if node.prev else "next",
-        }
-        writer.body.append(writer.starttag(node, "button", **attributes_button))
+        writer.body.append(
+            writer.starttag(
+                node,
+                "button",
+                CLASS=f"{prefix}carousel-control-{'prev' if node.prev else 'next'}",
+                type="button",
+                **{"data-bs-target": f"#{node.div_id}", "data-bs-slide": "prev" if node.prev else "next"},
+            )
+        )
 
-        attributes_span = {
-            "CLASS": f"{prefix}carousel-control-{'prev' if node.prev else 'next'}-icon",
-            "aria-hidden": "true",
-        }
-        writer.body.append(writer.emptytag(node, "span", **attributes_span))
+        writer.body.append(
+            writer.emptytag(
+                node,
+                "span",
+                CLASS=f"{prefix}carousel-control-{'prev' if node.prev else 'next'}-icon",
+                **{"aria-hidden": "true"},
+            )
+        )
 
         writer.body.append(writer.starttag(node, "span", CLASS=f"{prefix}visually-hidden"))
         writer.body.append("Previous" if node.prev else "Next")
@@ -166,7 +172,6 @@ class CarouselIndicatorsNode(BaseNode):
         writer.body.append(writer.starttag(node, "div", CLASS=f"{prefix}carousel-indicators"))
         for i in range(node.count):
             attributes = {
-                "type": "button",
                 "data-bs-target": f"#{node.div_id}",
                 "data-bs-slide-to": f"{i}",
                 "aria-label": f"Slide {i+1}",
@@ -174,7 +179,7 @@ class CarouselIndicatorsNode(BaseNode):
             if i == 0:
                 attributes["CLASS"] = f"{prefix}active"
                 attributes["aria-current"] = "true"
-            writer.body.append(writer.emptytag(node, "button", **attributes))
+            writer.body.append(writer.emptytag(node, "button", type="button", **attributes))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
