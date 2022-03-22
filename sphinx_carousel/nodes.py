@@ -207,10 +207,11 @@ class CarouselCaptionNode(BaseNode):
         """Append opening tags to document body list."""
         classes = [f"{node.prefix}carousel-caption", f"{node.prefix}d-none", f"{node.prefix}d-md-block"]
         writer.body.append(writer.starttag(node, "div", "", CLASS=" ".join(classes)))
-        if node.title:
-            writer.body.append(writer.starttag(node, "h5", ""))
-            writer.body.append(node.title)
-            writer.body.append("</h5>")
+
+        writer.body.append(writer.starttag(node, "h5", ""))
+        writer.body.append(node.title)
+        writer.body.append("</h5>")
+
         if node.description:
             writer.body.append(writer.starttag(node, "p", ""))
             writer.body.append(node.description)
