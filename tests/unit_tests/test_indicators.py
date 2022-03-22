@@ -8,11 +8,11 @@ from bs4 import element
 @pytest.mark.sphinx("html", testroot="indicators")
 def test(carousels: List[element.Tag]):
     """Test."""
-    carousel = list(carousels[0])
+    carousel = carousels[0].find_all(recursive=False)
     assert carousel[1]["class"] == ["scbs-carousel-inner"]
 
     assert carousel[0]["class"] == ["scbs-carousel-indicators"]
-    buttons = list(carousel[0])
+    buttons = carousel[0].find_all(recursive=False)
     assert len(buttons) == 3
 
     assert buttons[0]["data-bs-slide-to"] == "0"
@@ -43,15 +43,15 @@ def test_div_id_match(carousel: element.Tag):
 @pytest.mark.sphinx("html", testroot="indicators")
 def test_toggle(carousels: List[element.Tag]):
     """Test."""
-    carousel = list(carousels[0])
+    carousel = carousels[0].find_all(recursive=False)
     assert carousel[0]["class"] == ["scbs-carousel-indicators"]
     assert carousel[1]["class"] == ["scbs-carousel-inner"]
 
-    carousel = list(carousels[1])
+    carousel = carousels[1].find_all(recursive=False)
     assert carousel[0]["class"] == ["scbs-carousel-inner"]
     assert len(carousel) == 1
 
-    carousel = list(carousels[2])
+    carousel = carousels[2].find_all(recursive=False)
     assert carousel[0]["class"] == ["scbs-carousel-inner"]
     assert len(carousel) == 1
 
@@ -59,14 +59,14 @@ def test_toggle(carousels: List[element.Tag]):
 @pytest.mark.sphinx("html", testroot="indicators-conf")
 def test_toggle_conf(carousels: List[element.Tag]):
     """Test."""
-    carousel = list(carousels[0])
+    carousel = carousels[0].find_all(recursive=False)
     assert carousel[0]["class"] == ["scbs-carousel-indicators"]
     assert carousel[1]["class"] == ["scbs-carousel-inner"]
 
-    carousel = list(carousels[1])
+    carousel = carousels[1].find_all(recursive=False)
     assert carousel[0]["class"] == ["scbs-carousel-inner"]
     assert len(carousel) == 1
 
-    carousel = list(carousels[2])
+    carousel = carousels[2].find_all(recursive=False)
     assert carousel[0]["class"] == ["scbs-carousel-indicators"]
     assert carousel[1]["class"] == ["scbs-carousel-inner"]
