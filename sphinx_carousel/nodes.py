@@ -1,6 +1,7 @@
 """Docutils nodes."""
 # pylint: disable=keyword-arg-before-vararg
 from abc import abstractmethod
+from typing import Dict
 
 from docutils import nodes
 from sphinx.application import Sphinx
@@ -42,24 +43,22 @@ class BaseNode(nodes.Element, nodes.General):
 class CarouselMainNode(BaseNode):
     """Main div."""
 
-    def __init__(self, div_id: str, data_ride: str = "", *args, **kwargs):
+    def __init__(self, div_id: str, attributes: Dict[str, str], *args, **kwargs):
         """Constructor.
 
         :param div_id: <div id="...">.
-        :param data_ride: <div data-bs-ride="...">.
+        :param attributes: Div attributes (e.g. {"data-bs-ride": "carousel", ...}.
         :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
         self.div_id = div_id
-        self.data_ride = data_ride
+        self.attributes = attributes
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselMainNode"):
         """Append opening tags to document body list."""
-        attributes = {"CLASS": f"{node.prefix}carousel {node.prefix}slide", "ids": [node.div_id]}
-        if node.data_ride:
-            attributes["data-bs-ride"] = node.data_ride
+        attributes = dict(node.attributes, CLASS=f"{node.prefix}carousel {node.prefix}slide", ids=[node.div_id])
         writer.body.append(writer.starttag(node, "div", "", **attributes))
 
     @staticmethod
