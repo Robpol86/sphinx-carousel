@@ -9,7 +9,7 @@ const banner = require('./banner.js')
 const BUNDLE = process.env.BUNDLE === 'true'
 const ESM = process.env.ESM === 'true'
 
-let fileDest = `bootstrap${ESM ? '.esm' : ''}`
+let fileDest = `bootstrap-carousel${ESM ? '.esm' : ''}`
 const external = ['@popperjs/core']
 const plugins = [
   replace({
@@ -71,7 +71,7 @@ const rollupConfig = {
 }
 
 if (!ESM) {
-  rollupConfig.output.name = 'bootstrap'
+  rollupConfig.output.name = 'bootstrap-carousel'
 }
 
 module.exports = rollupConfig
