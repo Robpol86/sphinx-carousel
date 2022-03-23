@@ -104,6 +104,9 @@ class CarouselItemNode(BaseNode):
 class CarouselControlNode(BaseNode):
     """Previous/next buttons."""
 
+    NEXT_ICON = "carousel-control-next"
+    PREV_ICON = "carousel-control-prev"
+
     def __init__(self, div_id: str, prev: bool = False, *args, **kwargs):
         """Constructor.
 
@@ -125,7 +128,7 @@ class CarouselControlNode(BaseNode):
             writer.starttag(
                 node,
                 "button",
-                CLASS=f"{prefix}carousel-control-{'prev' if node.prev else 'next'}",
+                CLASS=f"{prefix}{node.PREV_ICON if node.prev else node.NEXT_ICON}",
                 type="button",
                 **{"data-bs-target": f"#{node.div_id}", "data-bs-slide": "prev" if node.prev else "next"},
             )
@@ -174,6 +177,8 @@ class CarouselIndicatorsNode(BaseNode):
         """Append opening tags to document body list."""
         prefix = writer.config["carousel_bootstrap_prefix"]
         writer.body.append(writer.starttag(node, "div", CLASS=f"{prefix}carousel-indicators"))
+
+        # Add indicator buttons.
         for i in range(node.count):
             attributes = {
                 "data-bs-target": f"#{node.div_id}",
@@ -195,24 +200,40 @@ class CarouselIndicatorsNode(BaseNode):
 class CarouselCaptionNode(BaseNode):
     """Captions."""
 
-    def __init__(self, title: str = "", description: str = "", *args, **kwargs):
+    BELOW_BG_COLOR = "bg-dark"
+    BELOW_STYLES = [
+        "position: relative",
+        "left: 0",
+        "top: 0",
+        "font-family: var(--bs-font-sans-serif)",
+    ]
+
+    def __init__(self, title: str = "", description: str = "", below: bool = False, *args, **kwargs):
         """Constructor.
 
         :param title: Caption heading.
         :param description: Caption paragraph.
+        :param below: Display caption below image instead of overlayed on top.
         :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
         self.title = title
         self.description = description
+        self.below = below
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselCaptionNode"):
         """Append opening tags to document body list."""
         prefix = writer.config["carousel_bootstrap_prefix"]
-        classes = [f"{prefix}carousel-caption", f"{prefix}d-none", f"{prefix}d-md-block"]
-        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
+        classes = [f"{prefix}carousel-caption"]
+        if node.below:  # From: https://scottdorman.blog/2019/03/02/bootstrap-carousel-caption-placement/
+            classes.extend([f"{prefix}{node.BELOW_BG_COLOR}", f"{prefix}d-sm-block"])
+            attributes = {"style": "; ".join(node.BELOW_STYLES)}
+        else:
+            classes.extend([f"{prefix}d-none", f"{prefix}d-md-block"])
+            attributes = {}
+        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes), **attributes))
 
         writer.body.append(writer.starttag(node, "h5", ""))
         writer.body.append(node.title)
