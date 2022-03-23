@@ -8,6 +8,7 @@ Usage
     :data-bs-interval: false
     :show_controls:
     :show_indicators:
+    :show_captions_below:
 
     .. image:: https://i.imgur.com/fmJnevTl.jpg
         :target: https://i.imgur.com/fmJnevT.jpg

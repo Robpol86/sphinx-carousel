@@ -21,16 +21,22 @@ class Carousel(SphinxDirective):
 
     has_content = True
     option_spec = {
+        # Div data attributes.
         "data-bs-interval": directives.unchanged,
         "data-bs-keyboard": directives.unchanged,
         "data-bs-pause": directives.unchanged,
         "data-bs-ride": directives.unchanged,
         "data-bs-wrap": directives.unchanged,
         "data-bs-touch": directives.unchanged,
+        # Controls.
         "no_controls": directives.flag,
         "show_controls": directives.flag,
+        # Indicators.
         "no_indicators": directives.flag,
         "show_indicators": directives.flag,
+        # Captions.
+        "no_captions_below": directives.flag,
+        "show_captions_below": directives.flag,
     }
 
     def images(self) -> List[Tuple[docutils_image, Optional[reference], Optional[str], Optional[str]]]:
@@ -85,12 +91,13 @@ class Carousel(SphinxDirective):
 
         # Build carousel-inner div.
         prefix = self.config["carousel_bootstrap_prefix"]
+        captions_below = self.config_read_flag("captions_below")
         items = []
         for idx, (image, linked_image, title, description) in enumerate(images):
             image["classes"] += [f"{prefix}d-block", f"{prefix}w-100"]
             child_nodes = [linked_image or image]
             if title or description:
-                child_nodes.append(nodes.CarouselCaptionNode(title, description))
+                child_nodes.append(nodes.CarouselCaptionNode(title, description, below=captions_below))
             items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes))
         inner_div = nodes.CarouselInnerNode("", *items)
         main_div.append(inner_div)
@@ -144,6 +151,7 @@ def setup(app: Sphinx) -> Dict[str, str]:
     """
     app.add_config_value("carousel_bootstrap_add_css_js", True, "html")
     app.add_config_value("carousel_bootstrap_prefix", "scbs-", "html")
+    app.add_config_value("carousel_show_captions_below", False, "html")
     app.add_config_value("carousel_show_controls", False, "html")
     app.add_config_value("carousel_show_indicators", False, "html")
     app.add_directive("carousel", Carousel)
