@@ -60,7 +60,7 @@ jobs:
           docker cp scbs:/dist bootstrap/dist
           docker rm -f scbs
       - name: Diff
-        run: cp -v bootstrap/dist/bootstrap.{css,js} sphinx_carousel/_static/ && git diff --color=always
+        run: cp -v bootstrap/dist/bootstrap-carousel.{css,js} sphinx_carousel/_static/ && git diff --color=always
       - name: Store artifacts
         uses: actions/upload-artifact@v2
         with: {name: dist, path: bootstrap/dist, if-no-files-found: error}
