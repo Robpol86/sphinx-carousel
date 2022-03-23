@@ -42,20 +42,3 @@ extensions = ["sphinx_carousel.carousel"]
 ```
 
 TODO https://github.com/executablebooks/sphinx-panels
-
-## TODOs
-
-* Use minified
-* Investigate style overrides
-* Investigate missing padding below carousel (maybe need to use nodes.container?)
-* WARNING on no images.
-* latex testing
-* Rename bootstrap.{css,js} to bootstrap-carousel.*
-* Test opengraph first image
-* Handle images with different aspect ratios
-* Caption text style/color with different images
-* Look at captions on mobile
-* Test links on mobile
-* Test very large caption.
-* Caption styling
-* Indicator/controls style: visible on dark and light images
