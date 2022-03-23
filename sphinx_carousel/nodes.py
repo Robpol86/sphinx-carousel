@@ -131,18 +131,22 @@ class CarouselControlNode(BaseNode):
             )
         )
 
+        # Nested icon.
         writer.body.append(
-            writer.emptytag(
+            writer.starttag(
                 node,
                 "span",
+                "",
                 CLASS=f"{prefix}carousel-control-{'prev' if node.prev else 'next'}-icon",
                 **{"aria-hidden": "true"},
             )
         )
+        writer.body.append("</span>\n")
 
-        writer.body.append(writer.starttag(node, "span", CLASS=f"{prefix}visually-hidden"))
+        # Nested hidden text for screen readers.
+        writer.body.append(writer.starttag(node, "span", "", CLASS=f"{prefix}visually-hidden"))
         writer.body.append("Previous" if node.prev else "Next")
-        writer.body.append("\n</span>\n")
+        writer.body.append("</span>\n")
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -179,7 +183,8 @@ class CarouselIndicatorsNode(BaseNode):
             if i == 0:
                 attributes["CLASS"] = f"{prefix}active"
                 attributes["aria-current"] = "true"
-            writer.body.append(writer.emptytag(node, "button", type="button", **attributes))
+            writer.body.append(writer.starttag(node, "button", "", type="button", **attributes))
+            writer.body.append("</button>\n")
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -209,9 +214,9 @@ class CarouselCaptionNode(BaseNode):
         classes = [f"{prefix}carousel-caption", f"{prefix}d-none", f"{prefix}d-md-block"]
         writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
 
-        writer.body.append(writer.starttag(node, "h5"))
+        writer.body.append(writer.starttag(node, "h5", ""))
         writer.body.append(node.title)
-        writer.body.append("\n</h5>\n")
+        writer.body.append("</h5>\n")
 
         if node.description:
             writer.body.append(writer.starttag(node, "p"))
