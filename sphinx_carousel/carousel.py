@@ -15,6 +15,8 @@ from sphinx.util.fileutil import copy_asset_file
 
 from sphinx_carousel import __version__, nodes
 
+ImageTuple = Tuple[docutils_image, Optional[reference], Optional[str], Optional[str]]
+
 
 class Carousel(SphinxDirective):
     """Main directive."""
@@ -39,7 +41,7 @@ class Carousel(SphinxDirective):
         "show_captions_below": directives.flag,
     }
 
-    def images(self) -> List[Tuple[docutils_image, Optional[reference], Optional[str], Optional[str]]]:
+    def images(self) -> List[ImageTuple]:
         """Return list of image/figure nodes along with other associated data.
 
         :return: Image node, parent reference node if :target: was specified, and figure's title/description if available.
@@ -76,6 +78,24 @@ class Carousel(SphinxDirective):
             return True
         return False
 
+    def create_inner_node(self, images: List[ImageTuple]) -> Element:
+        """Return carousel-inner div node along with child nodes such as images and captions.
+
+        :param images: Output of self.images().
+        """
+        prefix = self.config["carousel_bootstrap_prefix"]
+        captions_below = self.config_read_flag("captions_below")
+        items = []
+
+        for idx, (image, linked_image, title, description) in enumerate(images):
+            image["classes"] += [f"{prefix}d-block", f"{prefix}w-100"]
+            child_nodes = [linked_image or image]
+            if title or description:
+                child_nodes.append(nodes.CarouselCaptionNode(title, description, below=captions_below))
+            items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes))
+
+        return nodes.CarouselInnerNode("", *items)
+
     def run(self) -> List[Element]:
         """Main method."""
         main_div_id = f"carousel-{self.env.new_serialno('carousel')}"
@@ -90,17 +110,7 @@ class Carousel(SphinxDirective):
             main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images)))
 
         # Build carousel-inner div.
-        prefix = self.config["carousel_bootstrap_prefix"]
-        captions_below = self.config_read_flag("captions_below")
-        items = []
-        for idx, (image, linked_image, title, description) in enumerate(images):
-            image["classes"] += [f"{prefix}d-block", f"{prefix}w-100"]
-            child_nodes = [linked_image or image]
-            if title or description:
-                child_nodes.append(nodes.CarouselCaptionNode(title, description, below=captions_below))
-            items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes))
-        inner_div = nodes.CarouselInnerNode("", *items)
-        main_div.append(inner_div)
+        main_div.append(self.create_inner_node(images))
 
         # Build control buttons.
         if self.config_read_flag("controls"):
