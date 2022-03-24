@@ -30,6 +30,11 @@ class Carousel(SphinxDirective):
         "data-bs-ride": directives.unchanged,
         "data-bs-wrap": directives.unchanged,
         "data-bs-touch": directives.unchanged,
+        # Crossfade/dark.
+        "no_fade": directives.flag,
+        "show_fade": directives.flag,
+        "no_dark": directives.flag,
+        "show_dark": directives.flag,
         # Controls.
         "no_controls": directives.flag,
         "show_controls": directives.flag,
@@ -78,10 +83,11 @@ class Carousel(SphinxDirective):
             return True
         return False
 
-    def create_inner_node(self, images: List[ImageTuple]) -> Element:
+    def create_inner_node(self, images: List[ImageTuple], dark: bool) -> Element:
         """Return carousel-inner div node along with child nodes such as images and captions.
 
         :param images: Output of self.images().
+        :param dark: Carousel dark variant.
         """
         prefix = self.config["carousel_bootstrap_prefix"]
         captions_below = self.config_read_flag("captions_below")
@@ -91,7 +97,7 @@ class Carousel(SphinxDirective):
             image["classes"] += [f"{prefix}d-block", f"{prefix}w-100"]
             child_nodes = [linked_image or image]
             if title or description:
-                child_nodes.append(nodes.CarouselCaptionNode(title, description, below=captions_below))
+                child_nodes.append(nodes.CarouselCaptionNode(title, description, below=captions_below, dark=dark))
             items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes))
 
         return nodes.CarouselInnerNode("", *items)
@@ -99,9 +105,12 @@ class Carousel(SphinxDirective):
     def run(self) -> List[Element]:
         """Main method."""
         main_div_id = f"carousel-{self.env.new_serialno('carousel')}"
+        dark_variant = self.config_read_flag("dark")
         main_div = nodes.CarouselMainNode(
             main_div_id,
             attributes={k: v for k, v in self.options.items() if k.startswith("data-")},
+            fade=self.config_read_flag("fade"),
+            dark=dark_variant,
         )
         images = self.images()
 
@@ -110,7 +119,7 @@ class Carousel(SphinxDirective):
             main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images)))
 
         # Build carousel-inner div.
-        main_div.append(self.create_inner_node(images))
+        main_div.append(self.create_inner_node(images, dark_variant))
 
         # Build control buttons.
         if self.config_read_flag("controls"):
@@ -169,6 +178,8 @@ def setup(app: Sphinx) -> Dict[str, str]:
     app.add_config_value("carousel_bootstrap_prefix", "scbs-", "html")
     app.add_config_value("carousel_show_captions_below", False, "html")
     app.add_config_value("carousel_show_controls", False, "html")
+    app.add_config_value("carousel_show_fade", False, "html")
+    app.add_config_value("carousel_show_dark", False, "html")
     app.add_config_value("carousel_show_indicators", False, "html")
     app.add_directive("carousel", Carousel)
     app.connect("builder-inited", copy_static)

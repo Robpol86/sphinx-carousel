@@ -32,25 +32,32 @@ class BaseNode(nodes.Element, nodes.General):
 class CarouselMainNode(BaseNode):
     """Main div."""
 
-    def __init__(self, div_id: str, attributes: Dict[str, str], *args, **kwargs):
+    def __init__(self, div_id: str, attributes: Dict[str, str], fade: bool = False, dark: bool = False, *args, **kwargs):
         """Constructor.
 
         :param div_id: <div id="...">.
         :param attributes: Div attributes (e.g. {"data-bs-ride": "carousel", ...}.
+        :param fade: Fade between images instead of using a slide transition.
+        :param dark: Carousel dark variant.
         :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
         self.div_id = div_id
         self.attributes = attributes
+        self.fade = fade
+        self.dark = dark
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselMainNode"):
         """Append opening tags to document body list."""
         prefix = writer.config["carousel_bootstrap_prefix"]
-        writer.body.append(
-            writer.starttag(node, "div", CLASS=f"{prefix}carousel {prefix}slide", ids=[node.div_id], **node.attributes)
-        )
+        classes = [f"{prefix}carousel", f"{prefix}slide"]
+        if node.fade:
+            classes.append(f"{prefix}carousel-fade")
+        if node.dark:
+            classes.append(f"{prefix}carousel-dark")
+        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes), ids=[node.div_id], **node.attributes))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -200,14 +207,16 @@ class CarouselIndicatorsNode(BaseNode):
 class CarouselCaptionNode(BaseNode):
     """Captions."""
 
-    BELOW_BG_COLOR = "bg-dark"
+    BELOW_BG_DARK = "bg-dark"
+    BELOW_BG_LIGHT = "bg-light"
 
-    def __init__(self, title: str = "", description: str = "", below: bool = False, *args, **kwargs):
+    def __init__(self, title: str = "", description: str = "", below: bool = False, dark: bool = False, *args, **kwargs):
         """Constructor.
 
         :param title: Caption heading.
         :param description: Caption paragraph.
         :param below: Display caption below image instead of overlayed on top.
+        :param dark: Carousel dark variant.
         :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
@@ -215,6 +224,7 @@ class CarouselCaptionNode(BaseNode):
         self.title = title
         self.description = description
         self.below = below
+        self.dark = dark
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselCaptionNode"):
@@ -222,7 +232,13 @@ class CarouselCaptionNode(BaseNode):
         prefix = writer.config["carousel_bootstrap_prefix"]
         classes = [f"{prefix}carousel-caption"]
         if node.below:  # From: https://scottdorman.blog/2019/03/02/bootstrap-carousel-caption-placement/
-            classes.extend([f"{prefix}{node.BELOW_BG_COLOR}", f"{prefix}d-sm-block", "scc-below-c"])
+            classes.extend(
+                [
+                    f"{prefix}{node.BELOW_BG_LIGHT if node.dark else node.BELOW_BG_DARK}",
+                    f"{prefix}d-sm-block",
+                    "scc-below-c",
+                ]
+            )
         else:
             classes.extend([f"{prefix}d-none", f"{prefix}d-md-block"])
         writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
