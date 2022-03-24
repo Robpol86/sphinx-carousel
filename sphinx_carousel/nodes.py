@@ -201,12 +201,6 @@ class CarouselCaptionNode(BaseNode):
     """Captions."""
 
     BELOW_BG_COLOR = "bg-dark"
-    BELOW_STYLES = [
-        "position: relative",
-        "left: 0",
-        "top: 0",
-        "font-family: var(--bs-font-sans-serif)",
-    ]
 
     def __init__(self, title: str = "", description: str = "", below: bool = False, *args, **kwargs):
         """Constructor.
@@ -228,12 +222,10 @@ class CarouselCaptionNode(BaseNode):
         prefix = writer.config["carousel_bootstrap_prefix"]
         classes = [f"{prefix}carousel-caption"]
         if node.below:  # From: https://scottdorman.blog/2019/03/02/bootstrap-carousel-caption-placement/
-            classes.extend([f"{prefix}{node.BELOW_BG_COLOR}", f"{prefix}d-sm-block"])
-            attributes = {"style": "; ".join(node.BELOW_STYLES)}
+            classes.extend([f"{prefix}{node.BELOW_BG_COLOR}", f"{prefix}d-sm-block", "scc-below-c"])
         else:
             classes.extend([f"{prefix}d-none", f"{prefix}d-md-block"])
-            attributes = {}
-        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes), **attributes))
+        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
 
         writer.body.append(writer.starttag(node, "h5", ""))
         writer.body.append(node.title)
