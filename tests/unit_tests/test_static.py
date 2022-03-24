@@ -5,7 +5,7 @@ import pytest
 from bs4 import BeautifulSoup
 from sphinx.testing.util import SphinxTestApp
 
-ROOTS = ("static-on", "static-off")
+ROOTS = ("static/off", "static/on")
 
 
 @pytest.mark.parametrize("testroot", [pytest.param(r, marks=pytest.mark.sphinx("html", testroot=r)) for r in ROOTS])
@@ -16,7 +16,7 @@ def test_copied(sphinx_app: SphinxTestApp, testroot: str):
 
     path_bs_css = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.css"
     path_bs_js = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.js"
-    if testroot.endswith("-on"):
+    if testroot.endswith("on"):
         assert path_bs_css.is_file()
         assert path_bs_js.is_file()
     else:
@@ -33,7 +33,7 @@ def test_index(index_html: BeautifulSoup, testroot: str):
     sources = [t.get("src") for t in script_tags]
 
     assert "_static/carousel-custom.css" in hrefs
-    if testroot.endswith("-on"):
+    if testroot.endswith("on"):
         assert "_static/bootstrap-carousel.css" in hrefs
         assert "_static/bootstrap-carousel.js" in sources
     else:
