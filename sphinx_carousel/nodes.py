@@ -114,28 +114,33 @@ class CarouselControlNode(BaseNode):
     NEXT_ICON = "carousel-control-next"
     PREV_ICON = "carousel-control-prev"
 
-    def __init__(self, div_id: str, prev: bool = False, *args, **kwargs):
+    def __init__(self, div_id: str, prev: bool = False, top: bool = False, *args, **kwargs):
         """Constructor.
 
         :param div_id: Corresponding CarouselMainNode div ID.
         :param prev: Previous button if True, else Next button.
+        :param top: Display controls at the top of the image instead of the middle.
         :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
         self.div_id = div_id
         self.prev = prev
+        self.top = top
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselControlNode"):
         """Append opening tags to document body list."""
         prefix = writer.config["carousel_bootstrap_prefix"]
 
+        classes = [f"{prefix}{node.PREV_ICON if node.prev else node.NEXT_ICON}"]
+        if node.top:
+            classes.extend([f"{prefix}my-4", "scc-top-c"])
         writer.body.append(
             writer.starttag(
                 node,
                 "button",
-                CLASS=f"{prefix}{node.PREV_ICON if node.prev else node.NEXT_ICON}",
+                CLASS=" ".join(classes),
                 type="button",
                 **{"data-bs-target": f"#{node.div_id}", "data-bs-slide": "prev" if node.prev else "next"},
             )
@@ -167,23 +172,28 @@ class CarouselControlNode(BaseNode):
 class CarouselIndicatorsNode(BaseNode):
     """Indicators."""
 
-    def __init__(self, div_id: str, count: int, *args, **kwargs):
+    def __init__(self, div_id: str, count: int, top: bool = False, *args, **kwargs):
         """Constructor.
 
         :param div_id: Corresponding CarouselMainNode div ID.
         :param count: Number of images.
+        :param top: Display indicators at the top of the image instead of the middle.
         :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
         self.div_id = div_id
         self.count = count
+        self.top = top
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselIndicatorsNode"):
         """Append opening tags to document body list."""
         prefix = writer.config["carousel_bootstrap_prefix"]
-        writer.body.append(writer.starttag(node, "div", CLASS=f"{prefix}carousel-indicators"))
+        classes = [f"{prefix}carousel-indicators"]
+        if node.top:
+            classes.extend([f"{prefix}my-4", "scc-top-i"])
+        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
 
         # Add indicator buttons.
         for i in range(node.count):
