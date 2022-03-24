@@ -35,10 +35,11 @@ class Carousel(SphinxDirective):
         "show_fade": directives.flag,
         "no_dark": directives.flag,
         "show_dark": directives.flag,
-        # Controls.
+        # Controls/indicators.
+        "no_buttons_on_top": directives.flag,
+        "show_buttons_on_top": directives.flag,
         "no_controls": directives.flag,
         "show_controls": directives.flag,
-        # Indicators.
         "no_indicators": directives.flag,
         "show_indicators": directives.flag,
         # Captions.
@@ -113,18 +114,19 @@ class Carousel(SphinxDirective):
             dark=dark_variant,
         )
         images = self.images()
+        buttons_on_top = self.config_read_flag("buttons_on_top")
 
         # Build indicators.
         if self.config_read_flag("indicators"):
-            main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images)))
+            main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images), top=buttons_on_top))
 
         # Build carousel-inner div.
         main_div.append(self.create_inner_node(images, dark_variant))
 
         # Build control buttons.
         if self.config_read_flag("controls"):
-            main_div.append(nodes.CarouselControlNode(main_div_id, prev=True))
-            main_div.append(nodes.CarouselControlNode(main_div_id))
+            main_div.append(nodes.CarouselControlNode(main_div_id, top=buttons_on_top, prev=True))
+            main_div.append(nodes.CarouselControlNode(main_div_id, top=buttons_on_top))
 
         return [main_div]
 
@@ -176,6 +178,7 @@ def setup(app: Sphinx) -> Dict[str, str]:
     """
     app.add_config_value("carousel_bootstrap_add_css_js", True, "html")
     app.add_config_value("carousel_bootstrap_prefix", "scbs-", "html")
+    app.add_config_value("carousel_show_buttons_on_top", False, "html")
     app.add_config_value("carousel_show_captions_below", False, "html")
     app.add_config_value("carousel_show_controls", False, "html")
     app.add_config_value("carousel_show_fade", False, "html")

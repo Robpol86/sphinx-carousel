@@ -9,6 +9,7 @@ Usage
     :show_controls:
     :show_indicators:
     :show_captions_below:
+    :show_buttons_on_top:
 
     .. image:: https://i.imgur.com/fmJnevTl.jpg
         :target: https://i.imgur.com/fmJnevT.jpg

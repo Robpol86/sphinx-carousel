@@ -1,3 +1,11 @@
+.scc-top-c {
+    align-items: start;
+}
+
+.scc-top-i {
+    bottom: unset;
+}
+
 .scc-below-c {
     position: relative;
     left: 0;
