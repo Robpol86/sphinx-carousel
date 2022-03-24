@@ -5,7 +5,7 @@ import pytest
 from bs4 import element
 
 
-@pytest.mark.sphinx("html", testroot="indicators")
+@pytest.mark.sphinx("html", testroot="indicators/default")
 def test(carousels: List[element.Tag]):
     """Test."""
     carousel = carousels[0].find_all(recursive=False)
@@ -32,7 +32,7 @@ def test(carousels: List[element.Tag]):
     assert buttons[2].has_attr("aria-current") is False
 
 
-@pytest.mark.sphinx("html", testroot="indicators")
+@pytest.mark.sphinx("html", testroot="indicators/default")
 def test_div_id_match(carousel: element.Tag):
     """Test."""
     carousel_main_id = carousel["id"]
@@ -40,7 +40,7 @@ def test_div_id_match(carousel: element.Tag):
     assert control_target == f"#{carousel_main_id}"
 
 
-@pytest.mark.sphinx("html", testroot="indicators")
+@pytest.mark.sphinx("html", testroot="indicators/default")
 def test_toggle(carousels: List[element.Tag]):
     """Test."""
     carousel = carousels[0].find_all(recursive=False)
@@ -56,7 +56,7 @@ def test_toggle(carousels: List[element.Tag]):
     assert len(carousel) == 1
 
 
-@pytest.mark.sphinx("html", testroot="indicators-conf")
+@pytest.mark.sphinx("html", testroot="indicators/sphinx-conf")
 def test_toggle_conf(carousels: List[element.Tag]):
     """Test."""
     carousel = carousels[0].find_all(recursive=False)
