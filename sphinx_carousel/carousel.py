@@ -10,6 +10,7 @@ from typing import Dict, List, Optional, Tuple
 from docutils.nodes import caption, document, Element, image as docutils_image, legend, reference
 from docutils.parsers.rst import directives
 from sphinx.application import Sphinx
+from sphinx.util import logging as sphinx_logging
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.fileutil import copy_asset_file
 
@@ -107,6 +108,12 @@ class Carousel(SphinxDirective):
 
     def run(self) -> List[Element]:
         """Main method."""
+        images = self.images()
+        if not images:
+            log = sphinx_logging.getLogger(__name__)
+            log.warning("No images specified in carousel.", location=(self.env.docname, self.lineno))
+            return []
+
         main_div_id = f"carousel-{self.env.new_serialno('carousel')}"
         dark_variant = self.config_read_flag("dark")
         main_div = nodes.CarouselMainNode(
@@ -115,7 +122,6 @@ class Carousel(SphinxDirective):
             fade=self.config_read_flag("fade"),
             dark=dark_variant,
         )
-        images = self.images()
         buttons_on_top = self.config_read_flag("buttons_on_top")
         shadows = self.config_read_flag("shadows")
 
