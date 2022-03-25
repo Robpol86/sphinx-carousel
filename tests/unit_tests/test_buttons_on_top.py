@@ -13,9 +13,9 @@ def test(carousels: List[element.Tag], testroot: str):
     indicators = carousels[0].find_all("div", ["scbs-carousel-indicators"])[0]
     control_prev = carousels[0].find_all("button", ["scbs-carousel-control-prev"])[0]
     control_next = carousels[0].find_all("button", ["scbs-carousel-control-next"])[0]
-    assert indicators["class"] == ["scbs-carousel-indicators", "scbs-my-4", "scc-top-i"]
-    assert control_prev["class"] == ["scbs-carousel-control-prev", "scbs-my-4", "scc-top-c"]
-    assert control_next["class"] == ["scbs-carousel-control-next", "scbs-my-4", "scc-top-c"]
+    assert indicators["class"] == ["scbs-carousel-indicators", "scbs-my-4", "scc-top-indicator"]
+    assert control_prev["class"] == ["scbs-carousel-control-prev", "scbs-my-4", "scc-top-control"]
+    assert control_next["class"] == ["scbs-carousel-control-next", "scbs-my-4", "scc-top-control"]
 
     indicators = carousels[1].find_all("div", ["scbs-carousel-indicators"])[0]
     control_prev = carousels[1].find_all("button", ["scbs-carousel-control-prev"])[0]
@@ -28,9 +28,9 @@ def test(carousels: List[element.Tag], testroot: str):
     control_prev = carousels[2].find_all("button", ["scbs-carousel-control-prev"])[0]
     control_next = carousels[2].find_all("button", ["scbs-carousel-control-next"])[0]
     if testroot.endswith("conf"):
-        assert indicators["class"] == ["scbs-carousel-indicators", "scbs-my-4", "scc-top-i"]
-        assert control_prev["class"] == ["scbs-carousel-control-prev", "scbs-my-4", "scc-top-c"]
-        assert control_next["class"] == ["scbs-carousel-control-next", "scbs-my-4", "scc-top-c"]
+        assert indicators["class"] == ["scbs-carousel-indicators", "scbs-my-4", "scc-top-indicator"]
+        assert control_prev["class"] == ["scbs-carousel-control-prev", "scbs-my-4", "scc-top-control"]
+        assert control_next["class"] == ["scbs-carousel-control-next", "scbs-my-4", "scc-top-control"]
     else:
         assert indicators["class"] == ["scbs-carousel-indicators"]
         assert control_prev["class"] == ["scbs-carousel-control-prev"]
