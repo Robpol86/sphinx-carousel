@@ -87,11 +87,10 @@ class Carousel(SphinxDirective):
             return True
         return False
 
-    def create_inner_node(self, images: List[ImageTuple], dark: bool) -> Element:
+    def create_inner_node(self, images: List[ImageTuple]) -> Element:
         """Return carousel-inner div node along with child nodes such as images and captions.
 
         :param images: Output of self.images().
-        :param dark: Carousel dark variant.
         """
         prefix = self.config["carousel_bootstrap_prefix"]
         captions_below = self.config_read_flag("captions_below")
@@ -101,7 +100,7 @@ class Carousel(SphinxDirective):
             image["classes"] += [f"{prefix}d-block", f"{prefix}w-100"]
             child_nodes = [linked_image or image]
             if title or description:
-                child_nodes.append(nodes.CarouselCaptionNode(title, description, below=captions_below, dark=dark))
+                child_nodes.append(nodes.CarouselCaptionNode(title, description, below=captions_below))
             items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes))
 
         return nodes.CarouselInnerNode("", *items)
@@ -114,28 +113,27 @@ class Carousel(SphinxDirective):
             log.warning("No images specified in carousel.", location=(self.env.docname, self.lineno))
             return []
 
-        main_div_id = f"carousel-{self.env.new_serialno('carousel')}"
-        dark_variant = self.config_read_flag("dark")
         main_div = nodes.CarouselMainNode(
-            main_div_id,
+            div_id=f"carousel-{self.env.new_serialno('carousel')}",
+            prefix=self.config["carousel_bootstrap_prefix"],
             attributes={k: v for k, v in self.options.items() if k.startswith("data-")},
             fade=self.config_read_flag("fade"),
-            dark=dark_variant,
+            dark=self.config_read_flag("dark"),
         )
         buttons_on_top = self.config_read_flag("buttons_on_top")
         shadows = self.config_read_flag("shadows")
 
         # Build indicators.
         if self.config_read_flag("indicators"):
-            main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images), top=buttons_on_top, shadow=shadows))
+            main_div.append(nodes.CarouselIndicatorsNode(len(images), top=buttons_on_top, shadow=shadows))
 
         # Build carousel-inner div.
-        main_div.append(self.create_inner_node(images, dark_variant))
+        main_div.append(self.create_inner_node(images))
 
         # Build control buttons.
         if self.config_read_flag("controls"):
-            main_div.append(nodes.CarouselControlNode(main_div_id, top=buttons_on_top, shadow=shadows, prev=True))
-            main_div.append(nodes.CarouselControlNode(main_div_id, top=buttons_on_top, shadow=shadows))
+            main_div.append(nodes.CarouselControlNode(top=buttons_on_top, shadow=shadows, prev=True))
+            main_div.append(nodes.CarouselControlNode(top=buttons_on_top, shadow=shadows))
 
         return [main_div]
 

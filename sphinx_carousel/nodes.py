@@ -1,6 +1,6 @@
 """Docutils nodes."""
 # pylint: disable=keyword-arg-before-vararg
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 from typing import Dict
 
 from docutils import nodes
@@ -32,10 +32,13 @@ class BaseNode(nodes.Element, nodes.General):
 class CarouselMainNode(BaseNode):
     """Main div."""
 
-    def __init__(self, div_id: str, attributes: Dict[str, str], fade: bool = False, dark: bool = False, *args, **kwargs):
+    def __init__(
+        self, div_id: str, prefix: str, attributes: Dict[str, str], fade: bool = False, dark: bool = False, *args, **kwargs
+    ):
         """Constructor.
 
         :param div_id: <div id="...">.
+        :param prefix: Bootstrap class' prefix.
         :param attributes: Div attributes (e.g. {"data-bs-ride": "carousel", ...}.
         :param fade: Fade between images instead of using a slide transition.
         :param dark: Carousel dark variant.
@@ -44,6 +47,7 @@ class CarouselMainNode(BaseNode):
         """
         super().__init__(*args, **kwargs)
         self.div_id = div_id
+        self.prefix = prefix
         self.attributes = attributes
         self.fade = fade
         self.dark = dark
@@ -51,12 +55,11 @@ class CarouselMainNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselMainNode"):
         """Append opening tags to document body list."""
-        prefix = writer.config["carousel_bootstrap_prefix"]
-        classes = [f"{prefix}carousel", f"{prefix}slide"]
+        classes = [f"{node.prefix}carousel", f"{node.prefix}slide"]
         if node.fade:
-            classes.append(f"{prefix}carousel-fade")
+            classes.append(f"{node.prefix}carousel-fade")
         if node.dark:
-            classes.append(f"{prefix}carousel-dark")
+            classes.append(f"{node.prefix}carousel-dark")
         writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes), ids=[node.div_id], **node.attributes))
 
     @staticmethod
@@ -65,14 +68,27 @@ class CarouselMainNode(BaseNode):
         writer.body.append("</div>\n")
 
 
-class CarouselInnerNode(BaseNode):
+class SubNode(BaseNode, metaclass=ABCMeta):
+    """Base class for child nodes under main node."""
+
+    @property
+    def main_node(self) -> CarouselMainNode:
+        """Return the main carousel node instance."""
+        return self.parent  # noqa
+
+    @property
+    def prefix(self) -> str:
+        """Return Bootstrap class' prefix."""
+        return self.main_node.prefix
+
+
+class CarouselInnerNode(SubNode):
     """Secondary div that contains the image divs."""
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselInnerNode"):
         """Append opening tags to document body list."""
-        prefix = writer.config["carousel_bootstrap_prefix"]
-        writer.body.append(writer.starttag(node, "div", CLASS=f"{prefix}carousel-inner"))
+        writer.body.append(writer.starttag(node, "div", CLASS=f"{node.prefix}carousel-inner"))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -80,7 +96,7 @@ class CarouselInnerNode(BaseNode):
         writer.body.append("</div>\n")
 
 
-class CarouselItemNode(BaseNode):
+class CarouselItemNode(SubNode):
     """Div that contains an image."""
 
     def __init__(self, active: bool, *args, **kwargs):
@@ -93,13 +109,17 @@ class CarouselItemNode(BaseNode):
         super().__init__(*args, **kwargs)
         self.active = active
 
+    @property
+    def main_node(self) -> CarouselMainNode:
+        """Return the main carousel node instance."""
+        return self.parent.parent  # noqa
+
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselItemNode"):
         """Append opening tags to document body list."""
-        prefix = writer.config["carousel_bootstrap_prefix"]
-        classes = [f"{prefix}carousel-item"]
+        classes = [f"{node.prefix}carousel-item"]
         if node.active:
-            classes.append(f"{prefix}active")
+            classes.append(f"{node.prefix}active")
         writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
 
     @staticmethod
@@ -108,16 +128,15 @@ class CarouselItemNode(BaseNode):
         writer.body.append("</div>\n")
 
 
-class CarouselControlNode(BaseNode):
+class CarouselControlNode(SubNode):
     """Previous/next buttons."""
 
     NEXT_ICON = "carousel-control-next"
     PREV_ICON = "carousel-control-prev"
 
-    def __init__(self, div_id: str, prev: bool = False, top: bool = False, shadow: bool = False, *args, **kwargs):
+    def __init__(self, prev: bool = False, top: bool = False, shadow: bool = False, *args, **kwargs):
         """Constructor.
 
-        :param div_id: Corresponding CarouselMainNode div ID.
         :param prev: Previous button if True, else Next button.
         :param top: Display controls at the top of the image instead of the middle.
         :param shadow: Show a shadow around the icons for better visibility when an image is a similar color.
@@ -125,7 +144,6 @@ class CarouselControlNode(BaseNode):
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
-        self.div_id = div_id
         self.prev = prev
         self.top = top
         self.shadow = shadow
@@ -133,11 +151,9 @@ class CarouselControlNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselControlNode"):
         """Append opening tags to document body list."""
-        prefix = writer.config["carousel_bootstrap_prefix"]
-
-        classes = [f"{prefix}{node.PREV_ICON if node.prev else node.NEXT_ICON}"]
+        classes = [f"{node.prefix}{node.PREV_ICON if node.prev else node.NEXT_ICON}"]
         if node.top:
-            classes.extend([f"{prefix}my-4", "scc-top-control"])
+            classes.extend([f"{node.prefix}my-4", "scc-top-control"])
         if node.shadow:
             classes.append("scc-shadow-control")
         writer.body.append(
@@ -146,7 +162,7 @@ class CarouselControlNode(BaseNode):
                 "button",
                 CLASS=" ".join(classes),
                 type="button",
-                **{"data-bs-target": f"#{node.div_id}", "data-bs-slide": "prev" if node.prev else "next"},
+                **{"data-bs-target": f"#{node.main_node.div_id}", "data-bs-slide": "prev" if node.prev else "next"},
             )
         )
 
@@ -156,14 +172,14 @@ class CarouselControlNode(BaseNode):
                 node,
                 "span",
                 "",
-                CLASS=f"{prefix}carousel-control-{'prev' if node.prev else 'next'}-icon",
+                CLASS=f"{node.prefix}carousel-control-{'prev' if node.prev else 'next'}-icon",
                 **{"aria-hidden": "true"},
             )
         )
         writer.body.append("</span>\n")
 
         # Nested hidden text for screen readers.
-        writer.body.append(writer.starttag(node, "span", "", CLASS=f"{prefix}visually-hidden"))
+        writer.body.append(writer.starttag(node, "span", "", CLASS=f"{node.prefix}visually-hidden"))
         writer.body.append("Previous" if node.prev else "Next")
         writer.body.append("</span>\n")
 
@@ -173,13 +189,12 @@ class CarouselControlNode(BaseNode):
         writer.body.append("</button>\n")
 
 
-class CarouselIndicatorsNode(BaseNode):
+class CarouselIndicatorsNode(SubNode):
     """Indicators."""
 
-    def __init__(self, div_id: str, count: int, top: bool = False, shadow: bool = False, *args, **kwargs):
+    def __init__(self, count: int, top: bool = False, shadow: bool = False, *args, **kwargs):
         """Constructor.
 
-        :param div_id: Corresponding CarouselMainNode div ID.
         :param count: Number of images.
         :param top: Display indicators at the top of the image instead of the middle.
         :param shadow: Show a shadow around the icons for better visibility when an image is a similar color.
@@ -187,7 +202,6 @@ class CarouselIndicatorsNode(BaseNode):
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
-        self.div_id = div_id
         self.count = count
         self.top = top
         self.shadow = shadow
@@ -195,10 +209,9 @@ class CarouselIndicatorsNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselIndicatorsNode"):
         """Append opening tags to document body list."""
-        prefix = writer.config["carousel_bootstrap_prefix"]
-        classes = [f"{prefix}carousel-indicators"]
+        classes = [f"{node.prefix}carousel-indicators"]
         if node.top:
-            classes.extend([f"{prefix}my-4", "scc-top-indicator"])
+            classes.extend([f"{node.prefix}my-4", "scc-top-indicator"])
         writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
 
         # Add indicator buttons.
@@ -207,12 +220,12 @@ class CarouselIndicatorsNode(BaseNode):
             classes_b.append("scc-shadow-indicator")
         for i in range(node.count):
             attributes = {
-                "data-bs-target": f"#{node.div_id}",
+                "data-bs-target": f"#{node.main_node.div_id}",
                 "data-bs-slide-to": f"{i}",
                 "aria-label": f"Slide {i+1}",
             }
             if i == 0:
-                attributes["CLASS"] = " ".join([f"{prefix}active"] + classes_b)
+                attributes["CLASS"] = " ".join([f"{node.prefix}active"] + classes_b)
                 attributes["aria-current"] = "true"
             elif classes_b:
                 attributes["CLASS"] = " ".join(classes_b)
@@ -225,19 +238,18 @@ class CarouselIndicatorsNode(BaseNode):
         writer.body.append("</div>\n")
 
 
-class CarouselCaptionNode(BaseNode):
+class CarouselCaptionNode(SubNode):
     """Captions."""
 
     BELOW_BG_DARK = "bg-dark"
     BELOW_BG_LIGHT = "bg-light"
 
-    def __init__(self, title: str = "", description: str = "", below: bool = False, dark: bool = False, *args, **kwargs):
+    def __init__(self, title: str = "", description: str = "", below: bool = False, *args, **kwargs):
         """Constructor.
 
         :param title: Caption heading.
         :param description: Caption paragraph.
         :param below: Display caption below image instead of overlayed on top.
-        :param dark: Carousel dark variant.
         :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
@@ -245,23 +257,26 @@ class CarouselCaptionNode(BaseNode):
         self.title = title
         self.description = description
         self.below = below
-        self.dark = dark
+
+    @property
+    def main_node(self) -> CarouselMainNode:
+        """Return the main carousel node instance."""
+        return self.parent.parent.parent  # noqa
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselCaptionNode"):
         """Append opening tags to document body list."""
-        prefix = writer.config["carousel_bootstrap_prefix"]
-        classes = [f"{prefix}carousel-caption"]
+        classes = [f"{node.prefix}carousel-caption"]
         if node.below:  # From: https://scottdorman.blog/2019/03/02/bootstrap-carousel-caption-placement/
             classes.extend(
                 [
-                    f"{prefix}{node.BELOW_BG_LIGHT if node.dark else node.BELOW_BG_DARK}",
-                    f"{prefix}d-sm-block",
+                    f"{node.prefix}{node.BELOW_BG_LIGHT if node.main_node.dark else node.BELOW_BG_DARK}",
+                    f"{node.prefix}d-sm-block",
                     "scc-below-control",
                 ]
             )
         else:
-            classes.extend([f"{prefix}d-none", f"{prefix}d-md-block"])
+            classes.extend([f"{node.prefix}d-none", f"{node.prefix}d-md-block"])
         writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
 
         writer.body.append(writer.starttag(node, "h5", ""))
