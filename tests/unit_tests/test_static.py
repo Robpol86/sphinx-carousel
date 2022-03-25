@@ -24,6 +24,18 @@ def test_copied(sphinx_app: SphinxTestApp, testroot: str):
         assert not path_bs_js.is_file()
 
 
+@pytest.mark.parametrize("_", [pytest.param(r, marks=pytest.mark.sphinx("latex", testroot=r)) for r in ROOTS])
+def test_copied_latex(sphinx_app: SphinxTestApp, _):
+    """Test."""
+    path_custom_css = Path(sphinx_app.outdir) / "_static" / "carousel-custom.css"
+    assert not path_custom_css.is_file()
+
+    path_bs_css = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.css"
+    path_bs_js = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.js"
+    assert not path_bs_css.is_file()
+    assert not path_bs_js.is_file()
+
+
 @pytest.mark.parametrize("testroot", [pytest.param(r, marks=pytest.mark.sphinx("html", testroot=r)) for r in ROOTS])
 def test_index(index_html: BeautifulSoup, testroot: str):
     """Test."""

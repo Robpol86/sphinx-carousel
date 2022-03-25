@@ -100,8 +100,8 @@ class Carousel(SphinxDirective):
             image["classes"] += [f"{prefix}d-block", f"{prefix}w-100"]
             child_nodes = [linked_image or image]
             if title or description:
-                child_nodes.append(nodes.CarouselCaptionNode(title, description, below=captions_below))
-            items.append(nodes.CarouselItemNode(idx == 0, "", *child_nodes))
+                child_nodes.append(nodes.CarouselCaptionNode(title=title, description=description, below=captions_below))
+            items.append(nodes.CarouselItemNode("", *child_nodes, active=idx == 0))
 
         return nodes.CarouselInnerNode("", *items)
 
@@ -125,7 +125,7 @@ class Carousel(SphinxDirective):
 
         # Build indicators.
         if self.config_read_flag("indicators"):
-            main_div.append(nodes.CarouselIndicatorsNode(len(images), top=buttons_on_top, shadow=shadows))
+            main_div.append(nodes.CarouselIndicatorsNode(count=len(images), top=buttons_on_top, shadow=shadows))
 
         # Build carousel-inner div.
         main_div.append(self.create_inner_node(images))
