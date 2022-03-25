@@ -1,12 +1,12 @@
-.scc-top-c {
+.scc-top-control {
     align-items: start;
 }
 
-.scc-top-i {
+.scc-top-indicator {
     bottom: unset;
 }
 
-.scc-below-c {
+.scc-below-control {
     position: relative;
     left: 0;
     top: 0;

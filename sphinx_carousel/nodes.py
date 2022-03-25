@@ -135,7 +135,7 @@ class CarouselControlNode(BaseNode):
 
         classes = [f"{prefix}{node.PREV_ICON if node.prev else node.NEXT_ICON}"]
         if node.top:
-            classes.extend([f"{prefix}my-4", "scc-top-c"])
+            classes.extend([f"{prefix}my-4", "scc-top-control"])
         writer.body.append(
             writer.starttag(
                 node,
@@ -192,7 +192,7 @@ class CarouselIndicatorsNode(BaseNode):
         prefix = writer.config["carousel_bootstrap_prefix"]
         classes = [f"{prefix}carousel-indicators"]
         if node.top:
-            classes.extend([f"{prefix}my-4", "scc-top-i"])
+            classes.extend([f"{prefix}my-4", "scc-top-indicator"])
         writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
 
         # Add indicator buttons.
@@ -246,7 +246,7 @@ class CarouselCaptionNode(BaseNode):
                 [
                     f"{prefix}{node.BELOW_BG_LIGHT if node.dark else node.BELOW_BG_DARK}",
                     f"{prefix}d-sm-block",
-                    "scc-below-c",
+                    "scc-below-control",
                 ]
             )
         else:
