@@ -26,23 +26,37 @@ class BaseNode(nodes.Element, nodes.General):
     @classmethod
     def add_node(cls, app: Sphinx):
         """Convenience method that adds the subclass node to the Sphinx app.."""
-        app.add_node(cls, html=(cls.html_visit, cls.html_depart))
+        app.add_node(
+            cls,
+            html=(cls.html_visit, cls.html_depart),
+            latex=(lambda *_: None, lambda *_: None),  # TODO https://github.com/Robpol86/sphinx-carousel/issues/50
+            man=(lambda *_: None, lambda *_: None),  # TODO https://github.com/Robpol86/sphinx-carousel/issues/51
+            texinfo=(lambda *_: None, lambda *_: None),  # TODO https://github.com/Robpol86/sphinx-carousel/issues/51
+            text=(lambda *_: None, lambda *_: None),  # TODO https://github.com/Robpol86/sphinx-carousel/issues/51
+        )
 
 
 class CarouselMainNode(BaseNode):
     """Main div."""
 
     def __init__(
-        self, div_id: str, prefix: str, attributes: Dict[str, str], fade: bool = False, dark: bool = False, *args, **kwargs
+        self,
+        *args,
+        div_id: str = "",
+        prefix: str = "",
+        attributes: Dict[str, str] = None,
+        fade: bool = False,
+        dark: bool = False,
+        **kwargs,
     ):
         """Constructor.
 
+        :param args: Passed to parent class.
         :param div_id: <div id="...">.
         :param prefix: Bootstrap class' prefix.
         :param attributes: Div attributes (e.g. {"data-bs-ride": "carousel", ...}.
         :param fade: Fade between images instead of using a slide transition.
         :param dark: Carousel dark variant.
-        :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
@@ -99,11 +113,11 @@ class CarouselInnerNode(SubNode):
 class CarouselItemNode(SubNode):
     """Div that contains an image."""
 
-    def __init__(self, active: bool, *args, **kwargs):
+    def __init__(self, *args, active: bool = False, **kwargs):
         """Constructor.
 
-        :param active: Append active class to div, needed for first image.
         :param args: Passed to parent class.
+        :param active: Append active class to div, needed for first image.
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
@@ -134,13 +148,13 @@ class CarouselControlNode(SubNode):
     NEXT_ICON = "carousel-control-next"
     PREV_ICON = "carousel-control-prev"
 
-    def __init__(self, prev: bool = False, top: bool = False, shadow: bool = False, *args, **kwargs):
+    def __init__(self, *args, prev: bool = False, top: bool = False, shadow: bool = False, **kwargs):
         """Constructor.
 
+        :param args: Passed to parent class.
         :param prev: Previous button if True, else Next button.
         :param top: Display controls at the top of the image instead of the middle.
         :param shadow: Show a shadow around the icons for better visibility when an image is a similar color.
-        :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
@@ -192,13 +206,13 @@ class CarouselControlNode(SubNode):
 class CarouselIndicatorsNode(SubNode):
     """Indicators."""
 
-    def __init__(self, count: int, top: bool = False, shadow: bool = False, *args, **kwargs):
+    def __init__(self, *args, count: int = 0, top: bool = False, shadow: bool = False, **kwargs):
         """Constructor.
 
+        :param args: Passed to parent class.
         :param count: Number of images.
         :param top: Display indicators at the top of the image instead of the middle.
         :param shadow: Show a shadow around the icons for better visibility when an image is a similar color.
-        :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
@@ -244,13 +258,13 @@ class CarouselCaptionNode(SubNode):
     BELOW_BG_DARK = "bg-dark"
     BELOW_BG_LIGHT = "bg-light"
 
-    def __init__(self, title: str = "", description: str = "", below: bool = False, *args, **kwargs):
+    def __init__(self, *args, title: str = "", description: str = "", below: bool = False, **kwargs):
         """Constructor.
 
+        :param args: Passed to parent class.
         :param title: Caption heading.
         :param description: Caption paragraph.
         :param below: Display caption below image instead of overlayed on top.
-        :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
