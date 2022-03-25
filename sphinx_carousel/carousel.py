@@ -42,6 +42,8 @@ class Carousel(SphinxDirective):
         "show_controls": directives.flag,
         "no_indicators": directives.flag,
         "show_indicators": directives.flag,
+        "no_shadows": directives.flag,
+        "show_shadows": directives.flag,
         # Captions.
         "no_captions_below": directives.flag,
         "show_captions_below": directives.flag,
@@ -115,18 +117,19 @@ class Carousel(SphinxDirective):
         )
         images = self.images()
         buttons_on_top = self.config_read_flag("buttons_on_top")
+        shadows = self.config_read_flag("shadows")
 
         # Build indicators.
         if self.config_read_flag("indicators"):
-            main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images), top=buttons_on_top))
+            main_div.append(nodes.CarouselIndicatorsNode(main_div_id, len(images), top=buttons_on_top, shadow=shadows))
 
         # Build carousel-inner div.
         main_div.append(self.create_inner_node(images, dark_variant))
 
         # Build control buttons.
         if self.config_read_flag("controls"):
-            main_div.append(nodes.CarouselControlNode(main_div_id, top=buttons_on_top, prev=True))
-            main_div.append(nodes.CarouselControlNode(main_div_id, top=buttons_on_top))
+            main_div.append(nodes.CarouselControlNode(main_div_id, top=buttons_on_top, shadow=shadows, prev=True))
+            main_div.append(nodes.CarouselControlNode(main_div_id, top=buttons_on_top, shadow=shadows))
 
         return [main_div]
 
@@ -147,7 +150,10 @@ def copy_static(app: Sphinx):
         copy_asset_file(str(static_in / "bootstrap-carousel.css"), str(static_out))
         copy_asset_file(str(static_in / "bootstrap-carousel.js"), str(static_out))
 
-    copy_asset_file(str(static_in / "carousel-custom.css"), str(static_out))
+    context = {
+        "bootstrap_prefix": app.config["carousel_bootstrap_prefix"],
+    }
+    copy_asset_file(str(static_in / "carousel-custom.css_t"), str(static_out), context)
 
 
 def include_static_on_demand(app: Sphinx, _: str, __: str, ___: dict, doctree: document):
@@ -184,6 +190,7 @@ def setup(app: Sphinx) -> Dict[str, str]:
     app.add_config_value("carousel_show_dark", False, "html")
     app.add_config_value("carousel_show_fade", False, "html")
     app.add_config_value("carousel_show_indicators", False, "html")
+    app.add_config_value("carousel_show_shadows", False, "html")
     app.add_directive("carousel", Carousel)
     app.connect("builder-inited", copy_static)
     app.connect("html-page-context", include_static_on_demand)

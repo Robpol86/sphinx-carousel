@@ -114,12 +114,13 @@ class CarouselControlNode(BaseNode):
     NEXT_ICON = "carousel-control-next"
     PREV_ICON = "carousel-control-prev"
 
-    def __init__(self, div_id: str, prev: bool = False, top: bool = False, *args, **kwargs):
+    def __init__(self, div_id: str, prev: bool = False, top: bool = False, shadow: bool = False, *args, **kwargs):
         """Constructor.
 
         :param div_id: Corresponding CarouselMainNode div ID.
         :param prev: Previous button if True, else Next button.
         :param top: Display controls at the top of the image instead of the middle.
+        :param shadow: Show a shadow around the icons for better visibility when an image is a similar color.
         :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
@@ -127,6 +128,7 @@ class CarouselControlNode(BaseNode):
         self.div_id = div_id
         self.prev = prev
         self.top = top
+        self.shadow = shadow
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselControlNode"):
@@ -136,6 +138,8 @@ class CarouselControlNode(BaseNode):
         classes = [f"{prefix}{node.PREV_ICON if node.prev else node.NEXT_ICON}"]
         if node.top:
             classes.extend([f"{prefix}my-4", "scc-top-control"])
+        if node.shadow:
+            classes.append("scc-shadow-control")
         writer.body.append(
             writer.starttag(
                 node,
@@ -172,12 +176,13 @@ class CarouselControlNode(BaseNode):
 class CarouselIndicatorsNode(BaseNode):
     """Indicators."""
 
-    def __init__(self, div_id: str, count: int, top: bool = False, *args, **kwargs):
+    def __init__(self, div_id: str, count: int, top: bool = False, shadow: bool = False, *args, **kwargs):
         """Constructor.
 
         :param div_id: Corresponding CarouselMainNode div ID.
         :param count: Number of images.
         :param top: Display indicators at the top of the image instead of the middle.
+        :param shadow: Show a shadow around the icons for better visibility when an image is a similar color.
         :param args: Passed to parent class.
         :param kwargs: Passed to parent class.
         """
@@ -185,6 +190,7 @@ class CarouselIndicatorsNode(BaseNode):
         self.div_id = div_id
         self.count = count
         self.top = top
+        self.shadow = shadow
 
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselIndicatorsNode"):
@@ -196,6 +202,9 @@ class CarouselIndicatorsNode(BaseNode):
         writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
 
         # Add indicator buttons.
+        classes_b = []
+        if node.shadow:
+            classes_b.append("scc-shadow-indicator")
         for i in range(node.count):
             attributes = {
                 "data-bs-target": f"#{node.div_id}",
@@ -203,8 +212,10 @@ class CarouselIndicatorsNode(BaseNode):
                 "aria-label": f"Slide {i+1}",
             }
             if i == 0:
-                attributes["CLASS"] = f"{prefix}active"
+                attributes["CLASS"] = " ".join([f"{prefix}active"] + classes_b)
                 attributes["aria-current"] = "true"
+            elif classes_b:
+                attributes["CLASS"] = " ".join(classes_b)
             writer.body.append(writer.starttag(node, "button", "", type="button", **attributes))
             writer.body.append("</button>\n")
 
