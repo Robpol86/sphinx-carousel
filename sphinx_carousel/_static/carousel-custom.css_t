@@ -6,7 +6,7 @@
     bottom: unset;
 }
 
-.scc-below-control {
+.scc-below-control {  /* https://scottdorman.blog/2019/03/02/bootstrap-carousel-caption-placement/ */
     position: relative;
     left: 0;
     top: 0;

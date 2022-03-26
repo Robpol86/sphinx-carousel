@@ -1,7 +1,7 @@
 """Docutils nodes."""
 # pylint: disable=keyword-arg-before-vararg
 from abc import ABCMeta, abstractmethod
-from typing import Dict
+from typing import Dict, List, Optional, Union
 
 from docutils import nodes
 from sphinx.application import Sphinx
@@ -10,6 +10,23 @@ from sphinx.writers.html5 import HTML5Translator
 
 class BaseNode(nodes.Element, nodes.General):
     """Base node class."""
+
+    CLASSES = []
+
+    def classes(self, *classes_in: Optional[List[str]], join: bool = True) -> Union[str, List[str]]:
+        """Return prefixed classes.
+
+        1. If a class starts with "*" then it will not be prefixed and the leading character will be removed.
+        2. If no input classes are provided then this defaults to self.CLASSES.
+        3. Multiple groups of classes will be flattened into one list.
+
+        :param join: Return a space delimited joined string instead of list of strings.
+        """
+        prefix = getattr(self, "prefix", "")
+        flattened = [
+            f"{c[1:]}" if c.startswith("*") else f"{prefix}{c}" for g in (classes_in or [self.CLASSES]) if g for c in g
+        ]
+        return " ".join(flattened) if join else flattened
 
     @staticmethod
     @abstractmethod
@@ -38,6 +55,10 @@ class BaseNode(nodes.Element, nodes.General):
 
 class CarouselMainNode(BaseNode):
     """Main div."""
+
+    CLASSES = ["carousel", "slide"]
+    CLASSES_DARK = ["carousel-dark"]
+    CLASSES_FADE = ["carousel-fade"]
 
     def __init__(
         self,
@@ -69,12 +90,19 @@ class CarouselMainNode(BaseNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselMainNode"):
         """Append opening tags to document body list."""
-        classes = [f"{node.prefix}carousel", f"{node.prefix}slide"]
-        if node.fade:
-            classes.append(f"{node.prefix}carousel-fade")
-        if node.dark:
-            classes.append(f"{node.prefix}carousel-dark")
-        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes), ids=[node.div_id], **node.attributes))
+        writer.body.append(
+            writer.starttag(
+                node,
+                "div",
+                CLASS=node.classes(
+                    node.CLASSES,
+                    node.CLASSES_FADE if node.fade else [],
+                    node.CLASSES_DARK if node.dark else [],
+                ),
+                ids=[node.div_id],
+                **node.attributes,
+            )
+        )
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -99,10 +127,12 @@ class SubNode(BaseNode, metaclass=ABCMeta):
 class CarouselInnerNode(SubNode):
     """Secondary div that contains the image divs."""
 
+    CLASSES = ["carousel-inner"]
+
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselInnerNode"):
         """Append opening tags to document body list."""
-        writer.body.append(writer.starttag(node, "div", CLASS=f"{node.prefix}carousel-inner"))
+        writer.body.append(writer.starttag(node, "div", CLASS=node.classes()))
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -112,6 +142,9 @@ class CarouselInnerNode(SubNode):
 
 class CarouselItemNode(SubNode):
     """Div that contains an image."""
+
+    CLASSES = ["carousel-item"]
+    CLASSES_ACTIVE = ["active"]
 
     def __init__(self, *args, active: bool = False, **kwargs):
         """Constructor.
@@ -131,10 +164,13 @@ class CarouselItemNode(SubNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselItemNode"):
         """Append opening tags to document body list."""
-        classes = [f"{node.prefix}carousel-item"]
-        if node.active:
-            classes.append(f"{node.prefix}active")
-        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
+        writer.body.append(
+            writer.starttag(
+                node,
+                "div",
+                CLASS=node.classes(node.CLASSES, node.CLASSES_ACTIVE if node.active else []),
+            )
+        )
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
@@ -145,8 +181,13 @@ class CarouselItemNode(SubNode):
 class CarouselControlNode(SubNode):
     """Previous/next buttons."""
 
-    NEXT_ICON = "carousel-control-next"
-    PREV_ICON = "carousel-control-prev"
+    CLASSES_NEXT = ["carousel-control-next"]
+    CLASSES_NEXT_ICON = ["carousel-control-next-icon"]
+    CLASSES_PREV = ["carousel-control-prev"]
+    CLASSES_PREV_ICON = ["carousel-control-prev-icon"]
+    CLASSES_TOP = ["my-4", "*scc-top-control"]
+    CLASSES_SHADOW = ["*scc-shadow-control"]
+    CLASSES_HIDDEN = ["visually-hidden"]
 
     def __init__(self, *args, prev: bool = False, top: bool = False, shadow: bool = False, **kwargs):
         """Constructor.
@@ -165,16 +206,15 @@ class CarouselControlNode(SubNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselControlNode"):
         """Append opening tags to document body list."""
-        classes = [f"{node.prefix}{node.PREV_ICON if node.prev else node.NEXT_ICON}"]
-        if node.top:
-            classes.extend([f"{node.prefix}my-4", "scc-top-control"])
-        if node.shadow:
-            classes.append("scc-shadow-control")
         writer.body.append(
             writer.starttag(
                 node,
                 "button",
-                CLASS=" ".join(classes),
+                CLASS=node.classes(
+                    node.CLASSES_PREV if node.prev else node.CLASSES_NEXT,
+                    node.CLASSES_TOP if node.top else [],
+                    node.CLASSES_SHADOW if node.shadow else [],
+                ),
                 type="button",
                 **{"data-bs-target": f"#{node.main_node.div_id}", "data-bs-slide": "prev" if node.prev else "next"},
             )
@@ -186,14 +226,14 @@ class CarouselControlNode(SubNode):
                 node,
                 "span",
                 "",
-                CLASS=f"{node.prefix}carousel-control-{'prev' if node.prev else 'next'}-icon",
+                CLASS=node.classes(node.CLASSES_PREV_ICON if node.prev else node.CLASSES_NEXT_ICON),
                 **{"aria-hidden": "true"},
             )
         )
         writer.body.append("</span>\n")
 
         # Nested hidden text for screen readers.
-        writer.body.append(writer.starttag(node, "span", "", CLASS=f"{node.prefix}visually-hidden"))
+        writer.body.append(writer.starttag(node, "span", "", CLASS=node.classes(node.CLASSES_HIDDEN)))
         writer.body.append("Previous" if node.prev else "Next")
         writer.body.append("</span>\n")
 
@@ -205,6 +245,11 @@ class CarouselControlNode(SubNode):
 
 class CarouselIndicatorsNode(SubNode):
     """Indicators."""
+
+    CLASSES = ["carousel-indicators"]
+    CLASSES_ACTIVE = ["active"]
+    CLASSES_TOP = ["my-4", "*scc-top-indicator"]
+    CLASSES_SHADOW = ["*scc-shadow-indicator"]
 
     def __init__(self, *args, count: int = 0, top: bool = False, shadow: bool = False, **kwargs):
         """Constructor.
@@ -223,15 +268,11 @@ class CarouselIndicatorsNode(SubNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselIndicatorsNode"):
         """Append opening tags to document body list."""
-        classes = [f"{node.prefix}carousel-indicators"]
-        if node.top:
-            classes.extend([f"{node.prefix}my-4", "scc-top-indicator"])
-        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
+        writer.body.append(
+            writer.starttag(node, "div", CLASS=node.classes(node.CLASSES, node.CLASSES_TOP if node.top else []))
+        )
 
         # Add indicator buttons.
-        classes_b = []
-        if node.shadow:
-            classes_b.append("scc-shadow-indicator")
         for i in range(node.count):
             attributes = {
                 "data-bs-target": f"#{node.main_node.div_id}",
@@ -239,11 +280,20 @@ class CarouselIndicatorsNode(SubNode):
                 "aria-label": f"Slide {i+1}",
             }
             if i == 0:
-                attributes["CLASS"] = " ".join([f"{node.prefix}active"] + classes_b)
                 attributes["aria-current"] = "true"
-            elif classes_b:
-                attributes["CLASS"] = " ".join(classes_b)
-            writer.body.append(writer.starttag(node, "button", "", type="button", **attributes))
+            writer.body.append(
+                writer.starttag(
+                    node,
+                    "button",
+                    "",
+                    type="button",
+                    CLASS=node.classes(
+                        node.CLASSES_ACTIVE if i == 0 else [],
+                        node.CLASSES_SHADOW if node.shadow else [],
+                    ),
+                    **attributes,
+                )
+            )
             writer.body.append("</button>\n")
 
     @staticmethod
@@ -255,8 +305,11 @@ class CarouselIndicatorsNode(SubNode):
 class CarouselCaptionNode(SubNode):
     """Captions."""
 
-    BELOW_BG_DARK = "bg-dark"
-    BELOW_BG_LIGHT = "bg-light"
+    CLASSES = ["carousel-caption"]
+    CLASSES_BG_DARK = ["bg-dark"]
+    CLASSES_BG_LIGHT = ["bg-light"]
+    CLASSES_BELOW = ["d-sm-block", "*scc-below-control"]
+    CLASSES_NOT_BELOW = ["d-none", "d-md-block"]
 
     def __init__(self, *args, title: str = "", description: str = "", below: bool = False, **kwargs):
         """Constructor.
@@ -280,18 +333,18 @@ class CarouselCaptionNode(SubNode):
     @staticmethod
     def html_visit(writer: HTML5Translator, node: "CarouselCaptionNode"):
         """Append opening tags to document body list."""
-        classes = [f"{node.prefix}carousel-caption"]
-        if node.below:  # From: https://scottdorman.blog/2019/03/02/bootstrap-carousel-caption-placement/
-            classes.extend(
-                [
-                    f"{node.prefix}{node.BELOW_BG_LIGHT if node.main_node.dark else node.BELOW_BG_DARK}",
-                    f"{node.prefix}d-sm-block",
-                    "scc-below-control",
-                ]
+        writer.body.append(
+            writer.starttag(
+                node,
+                "div",
+                CLASS=node.classes(
+                    node.CLASSES,
+                    node.CLASSES_BG_LIGHT if node.below and node.main_node.dark else [],
+                    node.CLASSES_BG_DARK if node.below and not node.main_node.dark else [],
+                    node.CLASSES_BELOW if node.below else node.CLASSES_NOT_BELOW,
+                ),
             )
-        else:
-            classes.extend([f"{node.prefix}d-none", f"{node.prefix}d-md-block"])
-        writer.body.append(writer.starttag(node, "div", CLASS=" ".join(classes)))
+        )
 
         writer.body.append(writer.starttag(node, "h5", ""))
         writer.body.append(node.title)
