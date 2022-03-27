@@ -26,7 +26,7 @@ def test_changelog():
     version = subprocess.check_output(["poetry", "version", "--no-interaction"]).strip().split()[1].decode("utf8")
     changelog = Path(__file__).parent.parent.parent / "CHANGELOG.md"
 
-    with changelog.open("r") as handle:
+    with changelog.open("r", encoding="utf8") as handle:
         changelog_head = handle.read(1048576).splitlines()
 
     assert [line for line in changelog_head if line.startswith(f"## [{version}] - ")]
