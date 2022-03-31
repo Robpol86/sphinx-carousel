@@ -23,17 +23,23 @@ def _sphinx_app(app: SphinxTestApp) -> SphinxTestApp:
     yield app
 
 
+@pytest.fixture(name="outdir")
+def _outdir(sphinx_app: SphinxTestApp) -> Path:
+    """Return the Sphinx output directory with HTML files."""
+    return Path(sphinx_app.outdir)
+
+
 @pytest.fixture(name="index_html")
-def _index_html(sphinx_app: SphinxTestApp) -> BeautifulSoup:
+def _index_html(outdir: Path) -> BeautifulSoup:
     """Read and parse generated test index.html."""
-    text = (Path(sphinx_app.outdir) / "index.html").read_text(encoding="utf8")
+    text = (outdir / "index.html").read_text(encoding="utf8")
     return BeautifulSoup(text, "html.parser")
 
 
 @pytest.fixture(name="unused_html")
-def _unused_html(sphinx_app: SphinxTestApp) -> BeautifulSoup:
+def _unused_html(outdir: Path) -> BeautifulSoup:
     """Read and parse generated test unused.html."""
-    text = (Path(sphinx_app.outdir) / "unused.html").read_text(encoding="utf8")
+    text = (outdir / "unused.html").read_text(encoding="utf8")
     return BeautifulSoup(text, "html.parser")
 
 
