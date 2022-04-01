@@ -2,6 +2,8 @@
 # pylint: disable=invalid-name
 import time
 
+from sphinx_carousel.unrelated import MultiTheme
+
 
 # General configuration.
 author = "Robpol86"
@@ -22,7 +24,13 @@ pygments_style = "vs"
 
 # Options for HTML output.
 html_copy_source = False
-html_theme = "sphinx_rtd_theme"
+html_theme = MultiTheme.select_theme(
+    [
+        "sphinx_rtd_theme",  # https://sphinx-themes.org/sample-sites/sphinx-rtd-theme/
+        "alabaster",  # https://sphinx-themes.org/sample-sites/default-alabaster/
+        "classic",  # https://sphinx-themes.org/sample-sites/default-classic/
+    ]
+)
 
 
 # https://sphinxext-opengraph.readthedocs.io/en/latest/#options
