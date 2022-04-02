@@ -17,7 +17,7 @@ class MultiTheme:  # noqa
     DIRECTORY_PREFIX = "theme_"
 
     @staticmethod
-    def get_sphinx_app() -> Optional[Sphinx]:
+    def get_sphinx_app() -> Optional[Sphinx]:  # pragma: no-fork-no-cover
         """Inspect call stack and return the Sphinx app instance if found."""
         for frame in inspect.stack():
             app = frame[0].f_locals.get("self", None)
@@ -26,7 +26,7 @@ class MultiTheme:  # noqa
         return None
 
     @classmethod
-    def modify_sphinx_app(cls, app: Sphinx, subdir: str):
+    def modify_sphinx_app(cls, app: Sphinx, subdir: str):  # pragma: no-fork-no-cover
         """Make changes to the Sphinx app.
 
         :param app: Sphinx app instance to modify.
@@ -54,7 +54,7 @@ class MultiTheme:  # noqa
         app.connect("build-finished", lambda *_: os_exit(0), priority=999)
 
     @staticmethod
-    def fork() -> bool:
+    def fork() -> bool:  # pragma: no-fork-no-cover
         """Fork Python process and wait for the child process to finish.
 
         :return: True if this is the child process, False if this is still the original/parent process.
@@ -124,13 +124,13 @@ class MultiTheme:  # noqa
 
         # Get Sphinx app instance.
         app = cls.get_sphinx_app()
-        if not app:
+        if not app:  # pragma: no-fork-no-cover
             log.warning(">>> Unable to locate Sphinx app instance from here <<<")
             return root_theme
 
         # Build secondary themes into subdirectories.
         log.info(">>> Entering multi-theme build mode <<<")
-        for idx, theme in enumerate(secondary_themes):
+        for idx, theme in enumerate(secondary_themes):  # pragma: no-fork-no-cover
             subdir = subdirs[idx]
             log.info(">>> Building docs with theme %s into %s <<<", theme, subdir)
             if cls.fork():
