@@ -84,7 +84,7 @@ class MultiTheme:  # noqa
         # Skip conditionals.
         if len(themes) < 2:
             return themes[0]
-        if os.environ.get("SPHINX_MULTI_THEME") == "false":
+        if os.environ.get("SPHINX_MULTI_THEME", "").lower() == "false":
             log.info(">>> Disabling multi-theme build mode <<<")
             return themes[0]
         if not hasattr(os, "fork"):

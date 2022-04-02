@@ -4,9 +4,11 @@ from pathlib import Path
 from typing import Optional
 
 import pytest
+from _pytest.fixtures import FixtureRequest
+from _pytest.monkeypatch import MonkeyPatch
 
 EXPECTED_NUM_FILES = 27
-ROOTS = ("multi-theme/single-theme/off", "multi-theme/single-theme/on")
+ROOTS = ("multi-theme/single-theme/off", "multi-theme/single-theme/on", "multi-theme/single-theme/on2")
 
 
 def directory_compare(left: Optional[Path] = None, right: Optional[Path] = None, compare: Optional[dircmp] = None) -> int:
@@ -42,15 +44,28 @@ def directory_compare(left: Optional[Path] = None, right: Optional[Path] = None,
     return file_count
 
 
+@pytest.fixture()
+def smt_false(monkeypatch: MonkeyPatch, request: FixtureRequest):
+    """Set SPHINX_MULTI_THEME to false before sphinx_app.build() when testing multi-theme/single-theme/on2."""
+    if request.node.name.endswith("on2]"):
+        monkeypatch.setenv("SPHINX_MULTI_THEME", "false")
+
+
+@pytest.mark.usefixtures("smt_false")
 @pytest.mark.parametrize("testroot", [pytest.param(r, marks=pytest.mark.sphinx("html", testroot=r)) for r in ROOTS])
 def test(outdir: Path, testroot: str):
     """Verify single-theme is the same as not using this feature."""
     assert (outdir / "index.html").is_file()
 
     # Diff all files.
+    parts = outdir.parts
     if testroot.endswith("on"):
-        parts = outdir.parts
         idx = parts.index("on")
+    elif testroot.endswith("on2"):
+        idx = parts.index("on2")
+    else:
+        idx = None
+    if idx is not None:
         outdir_off = Path(*(parts[:idx] + ("off",) + parts[idx + 1 :]))  # noqa
         assert directory_compare(outdir, outdir_off) == EXPECTED_NUM_FILES
 
