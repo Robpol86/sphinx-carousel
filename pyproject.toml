@@ -99,7 +99,7 @@ plugins = [
 ]
 
 [tool.coverage.coverage_conditional_plugin.rules]
-no-fork-no-cover = "not hasattr(os, 'fork')"
+no-fork-no-cover = "not hasattr(__import__('os'), 'fork')"
 
 [tool.pylint.FORMAT]
 good-names = ["i", "j", "k", "ex", "Run", "_", "x", "y", "z", "fd"]
