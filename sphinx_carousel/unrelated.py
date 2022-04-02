@@ -4,7 +4,7 @@ Code here is placed temporarily until I have enough time to move it to its own s
 """
 import inspect
 import os
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from sphinx.application import Sphinx
 from sphinx.errors import SphinxError
@@ -26,22 +26,23 @@ class MultiTheme:  # noqa
         return None
 
     @classmethod
-    def modify_sphinx_app(cls, app: Sphinx, theme: str):  # pragma: no cover
+    def modify_sphinx_app(cls, app: Sphinx, subdir: str):  # pragma: no cover
         """Make changes to the Sphinx app.
 
         :param app: Sphinx app instance to modify.
-        :param theme: Current theme being used.
+        :param subdir: Build docs into this subdirectory.
         """
         log = logging.getLogger(__file__)
-        subdir = f"{cls.DIRECTORY_PREFIX}{theme}"
         old_outdir = app.outdir
         old_doctreedir = app.doctreedir
 
+        # Set the output directory.
         new_outdir = os.path.join(old_outdir, subdir)
         ensuredir(new_outdir)
         log.info(">>> Changing outdir from %s to %s", old_outdir, new_outdir)
         app.outdir = new_outdir
 
+        # Set the doctree directory.
         new_doctreedir = old_doctreedir.replace(old_outdir, new_outdir)
         if new_doctreedir == old_doctreedir:
             new_doctreedir = os.path.join(old_doctreedir, subdir)
@@ -68,6 +69,31 @@ class MultiTheme:  # noqa
         return False
 
     @classmethod
+    def parse_themes(cls, themes: List[str]) -> Tuple[str, List[str], List[str]]:
+        """Determine subdirectory names for each theme.
+
+        :param themes: List of themes requested.
+
+        :return: First (root) theme, secondary (remaining) themes, unique subdirs for secondary themes.
+        """
+        root_theme = themes[0]
+        secondary_themes = themes[1:]
+        subdirs = []
+        visited = set()
+
+        for theme in secondary_themes:
+            subdir = f"{cls.DIRECTORY_PREFIX}{theme}"
+            if subdir in visited:
+                i = 2
+                while f"{subdir}{i}" in visited:
+                    i += 1
+                subdir = f"{subdir}{i}"
+            subdirs.append(subdir)
+            visited.add(subdir)
+
+        return root_theme, secondary_themes, subdirs
+
+    @classmethod
     def select_theme(cls, themes: List[str]) -> str:
         """Build copies of all docs using multiple themes in separate subdirectories.
 
@@ -80,31 +106,33 @@ class MultiTheme:  # noqa
         :return: The theme to use for the current build.
         """
         log = logging.getLogger(__file__)
+        root_theme, secondary_themes, subdirs = cls.parse_themes(themes)
 
         # Skip conditionals.
-        if len(themes) < 2:
-            return themes[0]
+        if not secondary_themes:
+            return root_theme
         if os.environ.get("SPHINX_MULTI_THEME", "").lower() == "false":
             log.info(">>> Disabling multi-theme build mode <<<")
-            return themes[0]
+            return root_theme
         if not hasattr(os, "fork"):
             log.warning(">>> Platform does not support forking, disabling multi-theme build <<<")
-            return themes[0]
+            return root_theme
 
         # Get Sphinx app instance.
         app = cls.get_sphinx_app()
         if not app:
             log.warning(">>> Unable to locate Sphinx app instance from here <<<")
-            return themes[0]
+            return root_theme
 
         # Build secondary themes into subdirectories.
         log.info(">>> Entering multi-theme build mode <<<")
-        for theme in themes[1:]:
-            log.info(">>> Building docs with theme: %s <<<", theme)
+        for idx, theme in enumerate(secondary_themes):
+            subdir = subdirs[idx]
+            log.info(">>> Building docs with theme %s into %s <<<", theme, subdir)
             if cls.fork():
-                cls.modify_sphinx_app(app, theme)
+                cls.modify_sphinx_app(app, subdir)
                 return theme  # This is the child process.
             log.info(">>> Done with theme: %s <<<", theme)
         log.info(">>> Exiting multi-theme build mode <<<")
 
-        return themes[0]
+        return root_theme
