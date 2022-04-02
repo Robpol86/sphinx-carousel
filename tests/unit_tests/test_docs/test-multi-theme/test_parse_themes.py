@@ -13,8 +13,9 @@ def test():
     assert MultiTheme.parse_themes(["a", "b"]) == ("a", ["b"], ["theme_b"])
     assert MultiTheme.parse_themes(["a", "b", "c"]) == ("a", ["b", "c"], ["theme_b", "theme_c"])
     assert MultiTheme.parse_themes(["a", "b", "c", "c"]) == ("a", ["b", "c", "c"], ["theme_b", "theme_c", "theme_c2"])
-    assert MultiTheme.parse_themes(["a", "b", "c", "d", "c"]) == (
+
+    assert MultiTheme.parse_themes(["a", "b", "c", "d", "c", "c", "c"]) == (
         "a",
-        ["b", "c", "d", "c"],
-        ["theme_b", "theme_c", "theme_d", "theme_c2"],
+        ["b", "c", "d", "c", "c", "c"],
+        ["theme_b", "theme_c", "theme_d", "theme_c2", "theme_c3", "theme_c4"],
     )
