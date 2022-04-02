@@ -17,7 +17,7 @@ class MultiTheme:  # noqa
     DIRECTORY_PREFIX = "theme_"
 
     @staticmethod
-    def get_sphinx_app() -> Optional[Sphinx]:  # pragma: no cover
+    def get_sphinx_app() -> Optional[Sphinx]:
         """Inspect call stack and return the Sphinx app instance if found."""
         for frame in inspect.stack():
             app = frame[0].f_locals.get("self", None)
@@ -26,7 +26,7 @@ class MultiTheme:  # noqa
         return None
 
     @classmethod
-    def modify_sphinx_app(cls, app: Sphinx, subdir: str):  # pragma: no cover
+    def modify_sphinx_app(cls, app: Sphinx, subdir: str):
         """Make changes to the Sphinx app.
 
         :param app: Sphinx app instance to modify.
@@ -49,8 +49,12 @@ class MultiTheme:  # noqa
         log.info(">>> Changing doctreedir from %s to %s", old_doctreedir, new_doctreedir)
         app.doctreedir = new_doctreedir
 
+        # Exit after Sphinx finishes building before it sends Python up the call stack (e.g. during sphinx.testing).
+        os_exit = os._exit  # noqa pylint: disable=protected-access
+        app.connect("build-finished", lambda *_: os_exit(0), priority=999)
+
     @staticmethod
-    def fork() -> bool:  # pragma: no cover
+    def fork() -> bool:
         """Fork Python process and wait for the child process to finish.
 
         :return: True if this is the child process, False if this is still the original/parent process.
