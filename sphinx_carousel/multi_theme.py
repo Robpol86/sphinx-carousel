@@ -4,6 +4,7 @@ Code here is placed temporarily until I have enough time to move it to its own s
 """
 import inspect
 import os
+from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
 from sphinx.application import Sphinx
@@ -13,29 +14,36 @@ from sphinx.util import ensuredir, logging
 DIRECTORY_PREFIX = "theme_"
 
 
-def parse_themes(themes: List[str]) -> Tuple[str, List[str], List[str]]:
+@dataclass
+class Theme:
+    """A 'struct' representing one theme."""
+
+    name: str  # e.g. "sphinx_rtd_theme"
+    subdir: str = ""  # Subdirectory basename including prefix, e.g. "theme_rtd"
+
+
+def parse_themes(themes: List[str]) -> Tuple[Theme, List[Theme]]:
     """Determine subdirectory names for each theme.
 
     :param themes: List of themes requested.
 
-    :return: Primary (first) theme, secondary (remaining) themes, unique subdirs for secondary themes.
+    :return: Primary (first) theme and list of secondary (remaining) themes.
     """
-    primary_theme = themes[0]
-    secondary_themes = themes[1:]
-    subdirs = []
+    primary_theme = Theme(themes[0])
+    secondary_themes = [Theme(t) for t in themes[1:]]
     visited = set()
 
     for theme in secondary_themes:
-        subdir = f"{DIRECTORY_PREFIX}{theme}"
+        subdir = f"{DIRECTORY_PREFIX}{theme.name}"
         if subdir in visited:
             i = 2
             while f"{subdir}{i}" in visited:
                 i += 1
             subdir = f"{subdir}{i}"
-        subdirs.append(subdir)
+        theme.subdir = subdir
         visited.add(subdir)
 
-    return primary_theme, secondary_themes, subdirs
+    return primary_theme, secondary_themes
 
 
 def get_sphinx_app() -> Optional[Sphinx]:  # pragma: no-fork-no-cover
@@ -106,33 +114,32 @@ def select_theme(themes: List[str]) -> str:
     :return: The theme to use for the current build.
     """
     log = logging.getLogger(__file__)
-    primary_theme, secondary_themes, subdirs = parse_themes(themes)
+    primary_theme, secondary_themes = parse_themes(themes)
 
     # Skip conditionals.
     if not secondary_themes:
-        return primary_theme
+        return primary_theme.name
     if os.environ.get("SPHINX_MULTI_THEME", "").lower() == "false":
         log.info(">>> Disabling multi-theme build mode <<<")
-        return primary_theme
+        return primary_theme.name
     if not hasattr(os, "fork"):
         log.warning(">>> Platform does not support forking, disabling multi-theme build <<<")
-        return primary_theme
+        return primary_theme.name
 
     # Get Sphinx app instance.
     app = get_sphinx_app()
     if not app:  # pragma: no-fork-no-cover
         log.warning(">>> Unable to locate Sphinx app instance from here <<<")
-        return primary_theme
+        return primary_theme.name
 
     # Build secondary themes into subdirectories.
     log.info(">>> Entering multi-theme build mode <<<")
-    for idx, theme in enumerate(secondary_themes):  # pragma: no-fork-no-cover
-        subdir = subdirs[idx]
-        log.info(">>> Building docs with theme %s into %s <<<", theme, subdir)
+    for theme in secondary_themes:  # pragma: no-fork-no-cover
+        log.info(">>> Building docs with theme %s into %s <<<", theme.name, theme.subdir)
         if fork():
-            modify_sphinx_app(app, subdir)
-            return theme  # This is the child process.
-        log.info(">>> Done with theme: %s <<<", theme)
+            modify_sphinx_app(app, theme.subdir)
+            return theme.name  # This is the child process.
+        log.info(">>> Done with theme: %s <<<", theme.name)
     log.info(">>> Exiting multi-theme build mode <<<")
 
-    return primary_theme
+    return primary_theme.name
