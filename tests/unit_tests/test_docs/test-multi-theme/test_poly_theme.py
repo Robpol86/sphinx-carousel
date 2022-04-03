@@ -10,7 +10,7 @@ pytestmark = pytest.mark.skipif("not hasattr(os, 'fork')", reason="Unsupported p
 @pytest.mark.sphinx("html", testroot="multi-theme/poly-theme")
 def test(outdir: Path):
     """Test."""
-    # Root theme.
+    # Primary theme.
     for file_ in ("index.html", "hello.html"):
         html = BeautifulSoup((outdir / file_).read_text(encoding="utf8"), "html.parser")
         stylesheets = [link["href"] for link in html.find_all("link", rel="stylesheet")]

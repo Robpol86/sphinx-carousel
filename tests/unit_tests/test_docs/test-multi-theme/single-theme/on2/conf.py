@@ -1,7 +1,7 @@
 """Sphinx test configuration."""
 import os
 
-from sphinx_carousel.unrelated import MultiTheme
+from sphinx_carousel.multi_theme import MultiTheme
 
 assert os.environ["SPHINX_MULTI_THEME"] == "false"
 

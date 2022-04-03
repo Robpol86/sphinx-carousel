@@ -2,7 +2,7 @@
 # pylint: disable=invalid-name
 import time
 
-from sphinx_carousel.unrelated import MultiTheme
+from sphinx_carousel.multi_theme import MultiTheme
 
 
 # General configuration.

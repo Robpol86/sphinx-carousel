@@ -10,7 +10,7 @@ pytestmark = pytest.mark.skipif("not hasattr(os, 'fork')", reason="Unsupported p
 @pytest.mark.sphinx("html", testroot="multi-theme/subdirs")
 def test(outdir: Path):
     """Test."""
-    # Root theme.
+    # Primary theme.
     html = BeautifulSoup((outdir / "index.html").read_text(encoding="utf8"), "html.parser")
     stylesheets = [link["href"] for link in html.find_all("link", rel="stylesheet")]
     assert "_static/alabaster.css" in stylesheets

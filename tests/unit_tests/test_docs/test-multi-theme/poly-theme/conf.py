@@ -1,5 +1,5 @@
 """Sphinx test configuration."""
-from sphinx_carousel.unrelated import MultiTheme
+from sphinx_carousel.multi_theme import MultiTheme
 
 exclude_patterns = ["_build"]
 extensions = ["sphinx_carousel.carousel"]
