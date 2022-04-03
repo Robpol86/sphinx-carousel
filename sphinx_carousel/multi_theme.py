@@ -1,4 +1,4 @@
-"""Code unrelated and out of scope of the main project.
+"""Stealth Sphinx extension unrelated and out of scope of the main project.
 
 Code here is placed temporarily until I have enough time to move it to its own separate project.
 """
@@ -55,7 +55,7 @@ class MultiTheme:  # noqa
 
     @staticmethod
     def fork() -> bool:  # pragma: no-fork-no-cover
-        """Fork Python process and wait for the child process to finish.
+        """Fork the Python process and wait for the child process to finish.
 
         :return: True if this is the child process, False if this is still the original/parent process.
         """
@@ -78,9 +78,9 @@ class MultiTheme:  # noqa
 
         :param themes: List of themes requested.
 
-        :return: First (root) theme, secondary (remaining) themes, unique subdirs for secondary themes.
+        :return: Primary (first) theme, secondary (remaining) themes, unique subdirs for secondary themes.
         """
-        root_theme = themes[0]
+        primary_theme = themes[0]
         secondary_themes = themes[1:]
         subdirs = []
         visited = set()
@@ -95,14 +95,14 @@ class MultiTheme:  # noqa
             subdirs.append(subdir)
             visited.add(subdir)
 
-        return root_theme, secondary_themes, subdirs
+        return primary_theme, secondary_themes, subdirs
 
     @classmethod
     def select_theme(cls, themes: List[str]) -> str:
         """Build copies of all docs using multiple themes in separate subdirectories.
 
-        The first theme in the list is the default/root theme. All other themes will be built in a forked process into a
-        prefixed subdirectory. At the end of the function the root theme is returned to the main process and Sphinx will
+        The first theme in the list is the default/primary theme. All other themes will be built in a forked process into a
+        prefixed subdirectory. At the end of the function the primary theme is returned to the main process and Sphinx will
         continue building it in the original output directory.
 
         :param themes: List of theme names as expected by the `html_theme` Sphinx config value.
@@ -110,23 +110,23 @@ class MultiTheme:  # noqa
         :return: The theme to use for the current build.
         """
         log = logging.getLogger(__file__)
-        root_theme, secondary_themes, subdirs = cls.parse_themes(themes)
+        primary_theme, secondary_themes, subdirs = cls.parse_themes(themes)
 
         # Skip conditionals.
         if not secondary_themes:
-            return root_theme
+            return primary_theme
         if os.environ.get("SPHINX_MULTI_THEME", "").lower() == "false":
             log.info(">>> Disabling multi-theme build mode <<<")
-            return root_theme
+            return primary_theme
         if not hasattr(os, "fork"):
             log.warning(">>> Platform does not support forking, disabling multi-theme build <<<")
-            return root_theme
+            return primary_theme
 
         # Get Sphinx app instance.
         app = cls.get_sphinx_app()
         if not app:  # pragma: no-fork-no-cover
             log.warning(">>> Unable to locate Sphinx app instance from here <<<")
-            return root_theme
+            return primary_theme
 
         # Build secondary themes into subdirectories.
         log.info(">>> Entering multi-theme build mode <<<")
@@ -139,4 +139,4 @@ class MultiTheme:  # noqa
             log.info(">>> Done with theme: %s <<<", theme)
         log.info(">>> Exiting multi-theme build mode <<<")
 
-        return root_theme
+        return primary_theme
