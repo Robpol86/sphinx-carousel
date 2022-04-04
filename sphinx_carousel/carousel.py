@@ -5,137 +5,14 @@ https://github.com/Robpol86/sphinx-carousel
 https://pypi.org/project/sphinx-carousel
 """
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict
 
-from docutils.nodes import caption, document, Element, image as docutils_image, legend, reference
-from docutils.parsers.rst import directives
+from docutils.nodes import document
 from sphinx.application import Sphinx
-from sphinx.util import logging as sphinx_logging
-from sphinx.util.docutils import SphinxDirective
 from sphinx.util.fileutil import copy_asset_file
 
 from sphinx_carousel import __version__, nodes
-
-ImageTuple = Tuple[docutils_image, Optional[reference], Optional[str], Optional[str]]
-
-
-class Carousel(SphinxDirective):
-    """Main directive."""
-
-    has_content = True
-    option_spec = {
-        # Div data attributes.
-        "data-bs-interval": directives.unchanged,
-        "data-bs-keyboard": directives.unchanged,
-        "data-bs-pause": directives.unchanged,
-        "data-bs-ride": directives.unchanged,
-        "data-bs-wrap": directives.unchanged,
-        "data-bs-touch": directives.unchanged,
-        # Crossfade/dark.
-        "no_fade": directives.flag,
-        "show_fade": directives.flag,
-        "no_dark": directives.flag,
-        "show_dark": directives.flag,
-        # Controls/indicators.
-        "no_buttons_on_top": directives.flag,
-        "show_buttons_on_top": directives.flag,
-        "no_controls": directives.flag,
-        "show_controls": directives.flag,
-        "no_indicators": directives.flag,
-        "show_indicators": directives.flag,
-        "no_shadows": directives.flag,
-        "show_shadows": directives.flag,
-        # Captions.
-        "no_captions_below": directives.flag,
-        "show_captions_below": directives.flag,
-    }
-
-    def images(self) -> List[ImageTuple]:
-        """Return list of image/figure nodes along with other associated data.
-
-        :return: Image node, parent reference node if :target: was specified, and figure's title/description if available.
-        """
-        # Create temporary empty document to dump nested image/figure directives into.
-        directive_content = Element()
-        directive_content.document = self.state.document
-        self.state.nested_parse(self.content, self.content_offset, directive_content)
-
-        images = []
-        for image in directive_content.traverse(docutils_image):
-            # Handle linked images.
-            linked_image = image.parent if image.parent.hasattr("refuri") else None
-            # Handle captions.
-            node = (linked_image or image).next_node(caption, siblings=True, ascend=False, descend=False)
-            title = node.astext() if node else None
-            node = (linked_image or image).next_node(legend, siblings=True, ascend=False, descend=False)
-            description = node.astext() if node else None
-            # Done with image.
-            images.append((image, linked_image, title, description))
-
-        return images
-
-    def config_read_flag(self, name: str) -> bool:
-        """Evaluate a directive flag option and the corresponding Sphinx conf.py entry as fallback.
-
-        :param name: Suffix.
-        """
-        if f"show_{name}" in self.options:
-            return True
-        if f"no_{name}" in self.options:
-            return False
-        if self.config[f"carousel_show_{name}"] is True:
-            return True
-        return False
-
-    def create_inner_node(self, images: List[ImageTuple]) -> Element:
-        """Return carousel-inner div node along with child nodes such as images and captions.
-
-        :param images: Output of self.images().
-        """
-        prefix = self.config["carousel_bootstrap_prefix"]
-        captions_below = self.config_read_flag("captions_below")
-        items = []
-
-        for idx, (image, linked_image, title, description) in enumerate(images):
-            image["classes"] += [f"{prefix}d-block", f"{prefix}w-100"]
-            child_nodes = [linked_image or image]
-            if title or description:
-                child_nodes.append(nodes.CarouselCaptionNode(title=title, description=description, below=captions_below))
-            items.append(nodes.CarouselItemNode("", *child_nodes, active=idx == 0))
-
-        return nodes.CarouselInnerNode("", *items)
-
-    def run(self) -> List[Element]:
-        """Main method."""
-        images = self.images()
-        if not images:
-            log = sphinx_logging.getLogger(__name__)
-            log.warning("No images specified in carousel.", location=(self.env.docname, self.lineno))
-            return []
-
-        main_div = nodes.CarouselMainNode(
-            div_id=f"carousel-{self.env.new_serialno('carousel')}",
-            prefix=self.config["carousel_bootstrap_prefix"],
-            attributes={k: v for k, v in self.options.items() if k.startswith("data-")},
-            fade=self.config_read_flag("fade"),
-            dark=self.config_read_flag("dark"),
-        )
-        buttons_on_top = self.config_read_flag("buttons_on_top")
-        shadows = self.config_read_flag("shadows")
-
-        # Build indicators.
-        if self.config_read_flag("indicators"):
-            main_div.append(nodes.CarouselIndicatorsNode(count=len(images), top=buttons_on_top, shadow=shadows))
-
-        # Build carousel-inner div.
-        main_div.append(self.create_inner_node(images))
-
-        # Build control buttons.
-        if self.config_read_flag("controls"):
-            main_div.append(nodes.CarouselControlNode(top=buttons_on_top, shadow=shadows, prev=True))
-            main_div.append(nodes.CarouselControlNode(top=buttons_on_top, shadow=shadows))
-
-        return [main_div]
+from sphinx_carousel.directives import Carousel
 
 
 def copy_static(app: Sphinx):
