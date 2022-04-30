@@ -10,13 +10,11 @@ jobs:
     name: Test
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
         python: ["3.6", "3.7", "3.8", "3.9", "3.10"]
         sphinx: [""]
         multi_theme: ["true"]
         include:
-          - os: macos-latest
-            python: "3.10"
           - os: windows-latest
             python: "3.10"
             multi_theme: "false"
@@ -25,35 +23,45 @@ jobs:
             sphinx: "4.0.3"
     runs-on: "${{matrix.os}}"
     steps:
-      - {name: Check out repository code, uses: actions/checkout@v2}
-      - {name: Initialize dependencies, id: init, uses: Robpol86/actions-init-deps-py@v3,
-         with: {python-version: "${{matrix.python}}", postargs: " -E docs"}}
-      - {name: Downgrade Sphinx, run: "poetry add --dev sphinx=${{matrix.sphinx}}", if: "${{matrix.sphinx}}"}
-      - {name: Run lints, run: make lint}
-      - {name: Run tests, run: make test, env: {PY_COLORS: 1}}
-      - {name: Run integration tests, run: make it}
-      - {name: Build docs, run: make docs, env: {SPHINX_MULTI_THEME: "${{matrix.multi_theme}}"}}
-      - {name: Build package, run: make build}
+
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Initialize dependencies
+        uses: Robpol86/actions-init-deps-py@v3
+        with:
+          cache-buster: "${{ join(matrix.*, '|') }}"
+          python-version: "${{ matrix.python }}"
+          postargs: " -E docs"
+
+      - name: Downgrade Sphinx
+        if: "${{matrix.sphinx}}"
+        run: "poetry add --dev sphinx=${{matrix.sphinx}}"
+
+      - name: Run tests
+        env:
+          PY_COLORS: 1
+        run: make test
+
       - name: Upload coverage
         uses: codecov/codecov-action@v2
-        with: {name: "coverage-${{runner.os}}-py${{steps.init.outputs.python-version}}"}
+        with:
+          name: "coverage-${{ runner.os }}-${{ join(matrix.*, '|') }}"
 
-  bootstrap:
-    name: Recompile Bootstrap
-    runs-on: ubuntu-latest
-    steps:
-      - {name: Check out repository code, uses: actions/checkout@v2}
-      - {name: Set up Docker Buildx, uses: docker/setup-buildx-action@v1}
-      - name: Build
-        uses: docker/build-push-action@v2
-        with: {context: bootstrap, tags: scbs, load: true, cache-from: type=gha, cache-to: "type=gha,mode=max"}
-      - name: Extract
+      - name: Run lints
+        run: make lint
+
+      - name: Run integration tests
+        run: make it
+
+      - name: Build docs
+        run: make docs
+        env:
+          SPHINX_MULTI_THEME: "${{ matrix.multi_theme }}"
+
+      - name: Build package
         run: |
-          docker create --name=scbs scbs
-          docker cp scbs:/dist bootstrap/dist
-          docker rm -f scbs
-      - name: Diff
-        run: cp -v bootstrap/dist/bootstrap-carousel.{css,js} sphinx_carousel/_static/ && git diff --color=always
-      - name: Store artifacts
-        uses: actions/upload-artifact@v2
-        with: {name: dist, path: bootstrap/dist, if-no-files-found: error}
+          make build
+          cd dist
+          unzip -t *.whl
+          unzip -p *.whl '*/METADATA'
