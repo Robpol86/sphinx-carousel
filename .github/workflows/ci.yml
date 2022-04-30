@@ -21,7 +21,7 @@ jobs:
           - os: ubuntu-latest
             python: "3.9"
             sphinx: "4.0.3"
-    runs-on: "${{matrix.os}}"
+    runs-on: "${{ matrix.os }}"
     steps:
 
       - name: Check out repository code
@@ -32,7 +32,6 @@ jobs:
         with:
           cache-buster: "${{ join(matrix.*, '|') }}"
           python-version: "${{ matrix.python }}"
-          postargs: " -E docs"
 
       - name: Downgrade Sphinx
         if: "${{matrix.sphinx}}"

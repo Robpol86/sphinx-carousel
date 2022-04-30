@@ -276,8 +276,8 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 name = "importlib-resources"
 version = "3.0.0"
 description = "Read resources from Python packages"
-category = "main"
-optional = true
+category = "dev"
+optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 
 [package.dependencies]
@@ -333,8 +333,8 @@ python-versions = ">=3.6"
 name = "livereload"
 version = "2.6.3"
 description = "Python LiveReload is an awesome tool for web developers"
-category = "main"
-optional = true
+category = "dev"
+optional = false
 python-versions = "*"
 
 [package.dependencies]
@@ -661,8 +661,8 @@ use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
-category = "main"
-optional = true
+category = "dev"
+optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
@@ -716,8 +716,8 @@ test = ["pytest", "pytest-cov", "html5lib", "cython", "typed-ast"]
 name = "sphinx-autobuild"
 version = "2021.3.14"
 description = "Rebuild Sphinx documentation on changes, with live-reload in the browser."
-category = "main"
-optional = true
+category = "dev"
+optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -732,8 +732,8 @@ test = ["pytest", "pytest-cov"]
 name = "sphinx-copybutton"
 version = "0.5.0"
 description = "Add a copy button to each of your code cells."
-category = "main"
-optional = true
+category = "dev"
+optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -747,16 +747,16 @@ rtd = ["sphinx", "ipython", "myst-nb", "sphinx-book-theme"]
 name = "sphinx-notfound-page"
 version = "0.8"
 description = "Sphinx extension to build a 404 page with absolute URLs"
-category = "main"
-optional = true
+category = "dev"
+optional = false
 python-versions = "*"
 
 [[package]]
 name = "sphinx-panels"
 version = "0.6.0"
 description = "A sphinx extension for creating panels in a grid layout."
-category = "main"
-optional = true
+category = "dev"
+optional = false
 python-versions = "*"
 
 [package.dependencies]
@@ -774,8 +774,8 @@ themes = ["sphinx-rtd-theme", "pydata-sphinx-theme (>=0.4.0,<0.5.0)", "sphinx-bo
 name = "sphinx-rtd-theme"
 version = "1.0.0"
 description = "Read the Docs theme for Sphinx"
-category = "main"
-optional = true
+category = "dev"
+optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
 
 [package.dependencies]
@@ -860,7 +860,7 @@ test = ["pytest"]
 name = "sphinxext-opengraph"
 version = "0.6.3"
 description = "Sphinx Extension to enable OGP support"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 
@@ -895,8 +895,8 @@ python-versions = ">=3.6"
 name = "tornado"
 version = "6.1"
 description = "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed."
-category = "main"
-optional = true
+category = "dev"
+optional = false
 python-versions = ">= 3.5"
 
 [[package]]
@@ -940,7 +940,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 name = "zipp"
 version = "3.6.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 
@@ -948,13 +948,10 @@ python-versions = ">=3.6"
 docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
-[extras]
-docs = ["sphinx-autobuild", "sphinx-copybutton", "sphinx-notfound-page", "sphinx-panels", "sphinx-rtd-theme", "sphinxext-opengraph"]
-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "5359aae80ae33e118563c2cdf150ba0b8e92d5bed2e135946d42bfe11c0b8b77"
+content-hash = "72128f50ef11e171b2f68cb447cabf1aef570b69261d9663aa4074fac3204fe0"
 
 [metadata.files]
 alabaster = [
