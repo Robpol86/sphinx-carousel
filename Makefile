@@ -4,19 +4,24 @@ export POETRY_VIRTUALENVS_IN_PROJECT = true
 
 ## Dependencies
 
-init: _HELP = Initialize Python VirtualEnv via Poetry (optional PYTHON_PATH or PYTHON_VERSION env vars)
-init: PYTHON_VERSION ?= 3
+init: _HELP = Initialize Python VirtualEnv via Poetry (optional PROJECT_PY_PATH or PROJECT_PY_VERSION env vars)
+init: PROJECT_PY_VERSION ?= 3
 init:
-ifdef PYTHON_PATH
-	poetry env use $(PYTHON_PATH)
+ifdef PROJECT_PY_PATH
+	poetry env use $(PROJECT_PY_PATH)
 else
-	command -V python$(PYTHON_VERSION) < /dev/null
-	poetry env use $(shell command -v python$(PYTHON_VERSION) < /dev/null)
+	command -V python$(PROJECT_PY_VERSION) < /dev/null
+	poetry env use $(shell command -v python$(PROJECT_PY_VERSION) < /dev/null)
 endif
 
 poetry.lock: _HELP = Lock dependency versions to file
 poetry.lock:
 	poetry lock
+
+.PHONY: relock
+relock: _HELP = Delete and recreate poetry lock files
+relock:
+	rm -f poetry.lock && $(MAKE) poetry.lock
 
 .PHONY: deps
 deps: _HELP = Install project dependencies
@@ -69,7 +74,7 @@ build:
 	poetry build -n -vvv
 
 docs/_build/html/index.html::
-	poetry run sphinx-build -n -W docs $(@D)
+	poetry run sphinx-build -T -n -W docs $(@D)
 	@echo Documentation available here: $@
 
 .PHONY: docs
@@ -84,7 +89,7 @@ autodocs: docs/_build/html/index.html
 
 clean: _HELP = Remove temporary files
 clean:
-	rm -rfv *.egg-info/ *cache*/ .*cache*/ .coverage coverage.xml htmlcov/ dist/ docs/_build/ requirements.txt
+	rm -rfv *.egg-info/ *cache*/ .*cache*/ .coverage* coverage.xml htmlcov/ dist/ docs/_build/ requirements.txt
 	find . -path '*/.*' -prune -o -name __pycache__ -type d -exec rm -r {} +
 
 distclean: _HELP = Remove temporary files including virtualenv
