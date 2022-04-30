@@ -39,23 +39,6 @@ repository = "https://github.com/Robpol86/sphinx-carousel"
 python = "^3.6"
 # Project dependencies.
 Sphinx = "*"
-# Docs.
-sphinx-autobuild = {version = "*", optional = true}
-sphinx-copybutton = {version = "*", optional = true}
-sphinx-notfound-page = {version = "*", optional = true}
-sphinx-panels = {version = "*", optional = true}
-sphinx-rtd-theme = {version = ">=1.0", optional = true}
-sphinxext-opengraph = "*"
-
-[tool.poetry.extras]
-docs = [
-    "sphinx-autobuild",
-    "sphinx-copybutton",
-    "sphinx-notfound-page",
-    "sphinx-panels",
-    "sphinx-rtd-theme",
-    "sphinxext-opengraph",
-]
 
 [tool.poetry.dev-dependencies]
 # IDE.
@@ -75,8 +58,14 @@ myst-parser = "*"
 pytest = "*"
 pytest-cov = "*"
 pytest-icdiff = "*"
-sphinxext-opengraph = "*"
 TexSoup = "*"
+# Docs.
+sphinx-autobuild = "*"
+sphinx-copybutton = "*"
+sphinx-notfound-page = "*"
+sphinx-panels = "*"
+sphinx-rtd-theme = ">=1.0"
+sphinxext-opengraph = "*"
 
 [tool.black]
 line-length = 125
