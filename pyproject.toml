@@ -53,7 +53,6 @@ pylint = "*"
 # Tests.
 beautifulsoup4 = "*"
 coverage = {version = "*", extras = ["toml"]}
-coverage-conditional-plugin = "*"
 myst-parser = "*"
 pytest = "*"
 pytest-cov = "*"
@@ -62,6 +61,7 @@ TexSoup = "*"
 # Docs.
 sphinx-autobuild = "*"
 sphinx-copybutton = "*"
+sphinx-multi-theme = "*"
 sphinx-notfound-page = "*"
 sphinx-panels = "*"
 sphinx-rtd-theme = ">=1.0"
@@ -79,14 +79,6 @@ exclude_lines = [
     "^\\s*raise AssertionError",
     "^\\s*raise NotImplementedError",
 ]
-
-[tool.coverage.run]
-plugins = [
-    "coverage_conditional_plugin",
-]
-
-[tool.coverage.coverage_conditional_plugin.rules]
-no-fork-no-cover = "not hasattr(__import__('os'), 'fork')"
 
 [tool.pylint.FORMAT]
 good-names = ["i", "j", "k", "ex", "Run", "_", "x", "y", "z", "fd"]

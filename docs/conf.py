@@ -2,7 +2,9 @@
 # pylint: disable=invalid-name
 import time
 
-from sphinx_carousel.multi_theme import select_theme
+from sphinx_multi_theme.theme import MultiTheme, Theme
+
+from sphinx_carousel import __version__ as version
 
 
 # General configuration.
@@ -12,25 +14,29 @@ html_last_updated_fmt = f"%c {time.tzname[time.localtime().tm_isdst]}"
 exclude_patterns = []
 extensions = [
     "notfound.extension",  # https://sphinx-notfound-page.readthedocs.io
-    "sphinx_copybutton",  # https://sphinx-copybutton.readthedocs.io
     "sphinx_carousel.carousel",
+    "sphinx_copybutton",  # https://sphinx-copybutton.readthedocs.io
+    "sphinx_multi_theme.multi_theme",  # https://sphinx-multi-theme.readthedocs.io
     "sphinx_panels",  # https://sphinx-panels.readthedocs.io
     "sphinxext.opengraph",  # https://sphinxext-opengraph.readthedocs.io
 ]
 language = "en"
 project = "sphinx-carousel"
 pygments_style = "vs"
+release = version
 
 
 # Options for HTML output.
 html_copy_source = False
-html_theme = select_theme(
+html_theme = MultiTheme(
     [
-        "sphinx_rtd_theme",  # https://sphinx-themes.org/sample-sites/sphinx-rtd-theme/
-        "alabaster",  # https://sphinx-themes.org/sample-sites/default-alabaster/
-        "classic",  # https://sphinx-themes.org/sample-sites/default-classic/
+        Theme("sphinx_rtd_theme", "Read the Docs"),  # https://sphinx-themes.org/sample-sites/sphinx-rtd-theme/
     ]
 )
+
+
+# https://sphinx-multi-theme.readthedocs.io
+multi_theme_print_files = True
 
 
 # https://sphinxext-opengraph.readthedocs.io/en/latest/#options

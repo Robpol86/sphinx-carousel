@@ -18,3 +18,6 @@ Project Links
 
     install
     usage
+
+.. multi-theme-toctree::
+    :caption: Supported Themes
