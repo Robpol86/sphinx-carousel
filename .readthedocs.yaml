@@ -4,6 +4,9 @@
 # Required
 version: 2
 
+# https://docs.readthedocs.io/en/stable/config-file/v2.html#formats
+formats: "all"
+
 # Set the version of Python and other tools you might need
 build:
   os: ubuntu-20.04
