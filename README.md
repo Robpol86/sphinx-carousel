@@ -1,18 +1,10 @@
 # sphinx-carousel
 
-A Sphinx extension for creating slideshows using
-[Bootstrap 5 Carousels](https://getbootstrap.com/docs/5.1/components/carousel/).
-
-* Python 3.6, 3.7, 3.8, and 3.9 supported on Linux, macOS, and Windows.
-
-📖 Full documentation: https://sphinx-carousel.readthedocs.io
-
 [![Github-CI][github-ci]][github-link]
 [![Coverage Status][codecov-badge]][codecov-link]
 [![Documentation Status][rtd-badge]][rtd-link]
 [![Code style: black][black-badge]][black-link]
 [![PyPI][pypi-badge]][pypi-link]
-[![PyPI Downloads][pypi-dl-badge]][pypi-dl-link]
 
 [github-ci]: https://github.com/Robpol86/sphinx-carousel/actions/workflows/ci.yml/badge.svg?branch=main
 [github-link]: https://github.com/Robpol86/sphinx-carousel/actions/workflows/ci.yml
@@ -24,21 +16,47 @@ A Sphinx extension for creating slideshows using
 [black-link]: https://github.com/ambv/black
 [pypi-badge]: https://img.shields.io/pypi/v/sphinx-carousel.svg
 [pypi-link]: https://pypi.org/project/sphinx-carousel
-[pypi-dl-badge]: https://img.shields.io/pypi/dw/sphinx-carousel?label=pypi%20downloads
-[pypi-dl-link]: https://pypistats.org/packages/sphinx-carousel
 
-## Quickstart
+A Sphinx extension for creating slideshows using
+[Bootstrap 5 Carousels](https://getbootstrap.com/docs/5.1/components/carousel/).
 
-To install run the following:
+📖 See the documentation at https://sphinx-carousel.readthedocs.io
 
-```bash
+## Install
+
+Requires Python 3.6 or greater and Sphinx 4.0 or greater.
+
+```shell
 pip install sphinx-carousel
 ```
 
-To use in Sphinx simply add to your `conf.py`:
+## Example
 
 ```python
-extensions = ["sphinx_carousel.carousel"]
+# conf.py
+extensions = [
+    "sphinx_carousel.carousel",
+]
 ```
 
-TODO https://github.com/executablebooks/sphinx-panels
+```rst
+===============
+An RST Document
+===============
+
+.. carousel::
+
+    .. image:: https://i.imgur.com/fmJnevTl.jpg
+        :target: https://i.imgur.com/fmJnevT.jpg
+    .. image:: https://i.imgur.com/ppGH90Jl.jpg
+    .. figure:: https://i.imgur.com/fWyn9A2l.jpg
+
+        An Example Image
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+        nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+        esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+        in culpa qui officia deserunt mollit anim id est laborum.
+
+```
