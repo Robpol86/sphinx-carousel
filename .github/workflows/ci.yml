@@ -10,32 +10,27 @@ jobs:
     name: Test
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python: ["3.6", "3.7", "3.8", "3.9", "3.10"]
-        sphinx: [""]
-        multi_theme: ["true"]
-        include:
-          - os: windows-latest
-            python: "3.10"
-            multi_theme: "false"
-          - os: ubuntu-latest
-            python: "3.9"
-            sphinx: "4.0.3"
+        poetry-min: ["", "poetry-min"]
     runs-on: "${{ matrix.os }}"
     steps:
 
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - name: Overwrite pyproject.toml and poetry.lock
+        if: matrix.poetry-min
+        run: |
+          cp -v pyproject-min.toml pyproject.toml
+          cp -v poetry-min.lock poetry.lock
+          git diff --color
+
       - name: Initialize dependencies
         uses: Robpol86/actions-init-deps-py@v3
         with:
           cache-buster: "${{ join(matrix.*, '|') }}"
           python-version: "${{ matrix.python }}"
-
-      - name: Downgrade Sphinx
-        if: "${{matrix.sphinx}}"
-        run: "poetry add --dev sphinx=${{matrix.sphinx}}"
 
       - name: Run tests
         env:
@@ -54,9 +49,8 @@ jobs:
         run: make it
 
       - name: Build docs
+        if: "! matrix.poetry-min"
         run: make docs
-        env:
-          SPHINX_MULTI_THEME: "${{ matrix.multi_theme }}"
 
       - name: Build package
         run: |
