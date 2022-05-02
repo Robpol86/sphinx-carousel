@@ -20,7 +20,6 @@ def test_version():
     assert version_poetry == version_project
 
 
-@pytest.mark.skip("TODO")  # TODO.
 def test_changelog():
     """Verify current version is included in the changelog file."""
     version = subprocess.check_output(["poetry", "version", "--no-interaction"]).strip().split()[1].decode("utf8")
