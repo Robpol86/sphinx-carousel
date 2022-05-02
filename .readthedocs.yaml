@@ -5,7 +5,7 @@
 version: 2
 
 # https://docs.readthedocs.io/en/stable/config-file/v2.html#formats
-formats: "all"
+# formats: "all"  # TODO https://github.com/Robpol86/sphinx-carousel/issues/72
 
 # Set the version of Python and other tools you might need
 build:
