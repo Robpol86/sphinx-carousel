@@ -26,6 +26,10 @@ jobs:
           cp -v poetry-min.lock poetry.lock
           git diff --color
 
+#      - name: Set codepage to utf-8
+#        if: runner.os == 'Windows'
+#        run: chcp 65001
+
       - name: Initialize dependencies
         uses: Robpol86/actions-init-deps-py@v3
         with:
