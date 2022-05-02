@@ -28,7 +28,11 @@ jobs:
 
       - name: Set codepage to utf-8
         if: runner.os == 'Windows'
-        run: chcp 65001
+        run: chcp; chcp 65001; chcp
+
+      - name: Print active codepage
+        if: runner.os == 'Windows'
+        run: chcp
 
       - name: Initialize dependencies
         uses: Robpol86/actions-init-deps-py@v3
