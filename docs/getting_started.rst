@@ -1,10 +1,11 @@
-.. _install:
+===============
+Getting Started
+===============
 
-============
-Installation
-============
+Install
+=======
 
-To install the library:
+Install the library with pip:
 
 .. tabbed:: Install from PyPI
 
@@ -18,12 +19,13 @@ To install the library:
 
         pip install git+https://github.com/Robpol86/sphinx-carousel@main
 
-Once the package is installed add ``sphinx_carousel.carousel`` to your extensions list in your ``conf.py`` file.
+Enable
+======
+
+Add ``sphinx_carousel.carousel`` to your extensions list in your ``conf.py`` file:
 
 .. code-block:: python
 
-    # conf.py
     extensions = [
-         # ... other extensions here
          "sphinx_carousel.carousel",
     ]

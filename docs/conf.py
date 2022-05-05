@@ -35,11 +35,8 @@ html_theme = MultiTheme(
 )
 
 
-# https://sphinx-multi-theme.readthedocs.io
+# Extension settings.
 multi_theme_print_files = True
-
-
-# https://sphinxext-opengraph.readthedocs.io/en/latest/#options
 ogp_site_name = project
 ogp_type = "website"
 ogp_use_first_image = True
