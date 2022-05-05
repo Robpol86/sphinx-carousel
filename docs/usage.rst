@@ -20,57 +20,59 @@ example carousel using an image and a figure:
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua.
 
-.. tabbed:: reStructuredText
+.. tab-set::
 
-    .. code-block:: rst
+    .. tab-item:: reStructuredText
 
-        .. carousel::
+        .. code-block:: rst
+
+            .. carousel::
+                :show_controls:
+
+                .. image:: https://i.imgur.com/fmJnevTl.jpg
+
+                .. figure:: https://i.imgur.com/fWyn9A2l.jpg
+
+                    Title and Description
+
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua.
+
+    .. tab-item:: MyST Markdown
+
+        .. code-block:: md
+
+            ````{carousel}
             :show_controls:
 
-            .. image:: https://i.imgur.com/fmJnevTl.jpg
+            ```{image} https://i.imgur.com/fmJnevTl.jpg
+            ```
 
-            .. figure:: https://i.imgur.com/fWyn9A2l.jpg
+            ```{figure} https://i.imgur.com/fWyn9A2l.jpg
+            Title and Description
 
-                Title and Description
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua.
+            ```
+            ````
 
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua.
+    .. tab-item:: MyST Markdown Code Fences
 
-.. tabbed:: MyST Markdown
+        .. code-block:: md
 
-    .. code-block:: md
+            ```{carousel}
+            :show_controls:
 
-        ````{carousel}
-        :show_controls:
+            :::{image} https://i.imgur.com/fmJnevTl.jpg
+            :::
 
-        ```{image} https://i.imgur.com/fmJnevTl.jpg
-        ```
+            :::{figure} https://i.imgur.com/fWyn9A2l.jpg
+            Title and Description
 
-        ```{figure} https://i.imgur.com/fWyn9A2l.jpg
-        Title and Description
-
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-        ```
-        ````
-
-.. tabbed:: MyST Markdown Code Fences
-
-    .. code-block:: md
-
-        ```{carousel}
-        :show_controls:
-
-        :::{image} https://i.imgur.com/fmJnevTl.jpg
-        :::
-
-        :::{figure} https://i.imgur.com/fWyn9A2l.jpg
-        Title and Description
-
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-        :::
-        ```
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua.
+            :::
+            ```
 
 Linked Images
 =============
@@ -91,62 +93,64 @@ Since we're using the standard image/figure directives we can use the ``:target:
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua.
 
-.. tabbed:: reStructuredText
+.. tab-set::
 
-    .. code-block:: rst
+    .. tab-item:: reStructuredText
 
-        .. carousel::
+        .. code-block:: rst
+
+            .. carousel::
+                :show_controls:
+
+                .. image:: https://i.imgur.com/fmJnevTl.jpg
+                    :target: https://google.com
+
+                .. figure:: https://i.imgur.com/fWyn9A2l.jpg
+                    :target: https://imgur.com
+
+                    Title and Description
+
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua.
+
+    .. tab-item:: MyST Markdown
+
+        .. code-block:: md
+
+            ````{carousel}
             :show_controls:
 
-            .. image:: https://i.imgur.com/fmJnevTl.jpg
-                :target: https://google.com
+            ```{image} https://i.imgur.com/fmJnevTl.jpg
+            :target: https://google.com
+            ```
 
-            .. figure:: https://i.imgur.com/fWyn9A2l.jpg
-                :target: https://imgur.com
+            ```{figure} https://i.imgur.com/fWyn9A2l.jpg
+            :target: https://imgur.com
 
-                Title and Description
+            Title and Description
 
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua.
+            ```
+            ````
 
-.. tabbed:: MyST Markdown
+    .. tab-item:: MyST Markdown Code Fences
 
-    .. code-block:: md
+        .. code-block:: md
 
-        ````{carousel}
-        :show_controls:
+            ```{carousel}
+            :show_controls:
 
-        ```{image} https://i.imgur.com/fmJnevTl.jpg
-        :target: https://google.com
-        ```
+            :::{image} https://i.imgur.com/fmJnevTl.jpg
+            :target: https://google.com
+            :::
 
-        ```{figure} https://i.imgur.com/fWyn9A2l.jpg
-        :target: https://imgur.com
+            :::{figure} https://i.imgur.com/fWyn9A2l.jpg
+            :target: https://imgur.com
 
-        Title and Description
+            Title and Description
 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-        ```
-        ````
-
-.. tabbed:: MyST Markdown Code Fences
-
-    .. code-block:: md
-
-        ```{carousel}
-        :show_controls:
-
-        :::{image} https://i.imgur.com/fmJnevTl.jpg
-        :target: https://google.com
-        :::
-
-        :::{figure} https://i.imgur.com/fWyn9A2l.jpg
-        :target: https://imgur.com
-
-        Title and Description
-
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-        :::
-        ```
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua.
+            :::
+            ```

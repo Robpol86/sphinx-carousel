@@ -17,8 +17,8 @@ extensions = [
     "sphinx.ext.autosectionlabel",  # https://www.sphinx-doc.org/en/master/usage/extensions/autosectionlabel.html
     "sphinx_carousel.carousel",
     "sphinx_copybutton",  # https://sphinx-copybutton.readthedocs.io
+    "sphinx_design",  # https://sphinx-design.readthedocs.io
     "sphinx_multi_theme.multi_theme",  # https://sphinx-multi-theme.readthedocs.io
-    "sphinx_panels",  # https://sphinx-panels.readthedocs.io
     "sphinxext.opengraph",  # https://sphinxext-opengraph.readthedocs.io
 ]
 language = "en"

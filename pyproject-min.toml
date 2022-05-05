@@ -68,9 +68,9 @@ TexSoup = "*"
 # Docs.
 sphinx-autobuild = "*"
 sphinx-copybutton = "*"
+sphinx-design = {version = "*", python = "^3.6"}
 sphinx-multi-theme = "*"
 sphinx-notfound-page = "*"
-sphinx-panels = "*"
 sphinx-rtd-theme = ">=1.0"
 sphinxext-opengraph = "*"
 
