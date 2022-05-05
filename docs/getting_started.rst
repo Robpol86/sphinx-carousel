@@ -7,17 +7,19 @@ Install
 
 Install the library with pip:
 
-.. tabbed:: Install from PyPI
+.. tab-set::
 
-    .. code-block:: bash
+    .. tab-item:: Install from PyPI
 
-        pip install sphinx-carousel
+        .. code-block:: bash
 
-.. tabbed:: Install from GitHub
+            pip install sphinx-carousel
 
-    .. code-block:: bash
+    .. tab-item:: Install from GitHub
 
-        pip install git+https://github.com/Robpol86/sphinx-carousel@main
+        .. code-block:: bash
+
+            pip install git+https://github.com/Robpol86/sphinx-carousel@main
 
 Enable
 ======
