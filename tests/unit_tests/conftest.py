@@ -1,4 +1,4 @@
-"""pytest fixtures."""
+"""pytest conftest."""
 from pathlib import Path
 from typing import List
 

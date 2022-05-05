@@ -3,7 +3,7 @@ Sphinx Carousel
 ===============
 
 A Sphinx extension for creating slideshows using
-`Bootstrap Carousels <https://getbootstrap.com/docs/4.6/components/carousel/>`_.
+`Bootstrap carousels <https://getbootstrap.com/docs/5.1/components/carousel/>`_.
 
 Project Links
 =============
@@ -16,7 +16,7 @@ Project Links
     :maxdepth: 3
     :caption: Contents
 
-    install
+    getting_started
     usage
 
 .. multi-theme-toctree::
