@@ -14,6 +14,16 @@ from sphinx.util.fileutil import copy_asset_file
 from sphinx_carousel import __version__, nodes
 from sphinx_carousel.directives import Carousel
 
+CONF_DEFAULT_BOOTSTRAP_ADD_CSS_JS = True
+CONF_DEFAULT_BOOTSTRAP_PREFIX = "scbs-"
+CONF_DEFAULT_SHOW_BUTTONS_ON_TOP = False
+CONF_DEFAULT_SHOW_CAPTIONS_BELOW = False
+CONF_DEFAULT_SHOW_CONTROLS = False
+CONF_DEFAULT_SHOW_DARK = False
+CONF_DEFAULT_SHOW_FADE = False
+CONF_DEFAULT_SHOW_INDICATORS = False
+CONF_DEFAULT_SHOW_SHADOWS = False
+
 
 def copy_static(app: Sphinx):
     """Install CSS and JS files into the output directory.
@@ -63,15 +73,15 @@ def setup(app: Sphinx) -> Dict[str, str]:
 
     :returns: Extension version.
     """
-    app.add_config_value("carousel_bootstrap_add_css_js", True, "html")
-    app.add_config_value("carousel_bootstrap_prefix", "scbs-", "html")
-    app.add_config_value("carousel_show_buttons_on_top", False, "html")
-    app.add_config_value("carousel_show_captions_below", False, "html")
-    app.add_config_value("carousel_show_controls", False, "html")
-    app.add_config_value("carousel_show_dark", False, "html")
-    app.add_config_value("carousel_show_fade", False, "html")
-    app.add_config_value("carousel_show_indicators", False, "html")
-    app.add_config_value("carousel_show_shadows", False, "html")
+    app.add_config_value("carousel_bootstrap_add_css_js", CONF_DEFAULT_BOOTSTRAP_ADD_CSS_JS, "html")
+    app.add_config_value("carousel_bootstrap_prefix", CONF_DEFAULT_BOOTSTRAP_PREFIX, "html")
+    app.add_config_value("carousel_show_buttons_on_top", CONF_DEFAULT_SHOW_BUTTONS_ON_TOP, "html")
+    app.add_config_value("carousel_show_captions_below", CONF_DEFAULT_SHOW_CAPTIONS_BELOW, "html")
+    app.add_config_value("carousel_show_controls", CONF_DEFAULT_SHOW_CONTROLS, "html")
+    app.add_config_value("carousel_show_dark", CONF_DEFAULT_SHOW_DARK, "html")
+    app.add_config_value("carousel_show_fade", CONF_DEFAULT_SHOW_FADE, "html")
+    app.add_config_value("carousel_show_indicators", CONF_DEFAULT_SHOW_INDICATORS, "html")
+    app.add_config_value("carousel_show_shadows", CONF_DEFAULT_SHOW_SHADOWS, "html")
     app.add_directive("carousel", Carousel)
     app.connect("builder-inited", copy_static)
     app.connect("html-page-context", include_static_on_demand)
