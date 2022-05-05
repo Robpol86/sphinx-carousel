@@ -18,6 +18,8 @@ Project Links
 
     getting_started
     usage
+    native_features
+    extended_features
 
 .. multi-theme-toctree::
     :caption: Supported Themes
