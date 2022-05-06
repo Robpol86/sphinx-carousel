@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - Supporting PyData and Book themes for Sphinx.
+- Fix RTD theme padding (https://github.com/Robpol86/sphinx-carousel/issues/31)
 
 ## [0.0.2] - 2022-05-06
 
