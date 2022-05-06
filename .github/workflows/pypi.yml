@@ -5,6 +5,18 @@ on:
 
 jobs:
 
+  docs:
+    name: Docs
+    runs-on: ubuntu-latest
+    steps:
+      - {name: Check out repository code, uses: actions/checkout@v2}
+      - {name: Initialize dependencies, id: init, uses: Robpol86/actions-init-deps-py@v3}
+      - {name: Build docs, run: make docs}
+      - {name: Compress, run: tar -C docs/_build -czvf docs.tar.gz --transform s/^html/docs/ html/}
+      - name: Store artifacts
+        uses: actions/upload-artifact@v2
+        with: {name: docs, path: docs.tar.gz, if-no-files-found: error}
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -19,7 +31,7 @@ jobs:
 
   publish:
     name: Publish to PyPI
-    needs: build
+    needs: [build, docs]
     runs-on: ubuntu-latest
     steps:
       - {name: Fetch packages, uses: actions/download-artifact@v2, with: {name: dist, path: dist}}
@@ -28,6 +40,9 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-      - name: Upload packages to Release
+      - name: Fetch docs
+        uses: actions/download-artifact@v2
+        with: {name: docs, path: dist}
+      - name: Upload artifacts to Release
         uses: svenstaro/upload-release-action@v2
         with: {file: dist/*, file_glob: true, repo_token: "${{ secrets.GITHUB_TOKEN }}", tag: "${{ github.ref }}"}

@@ -17,8 +17,8 @@ example carousel using an image and a figure:
 
         Title and Description
 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
 .. tab-set::
 
@@ -35,10 +35,10 @@ example carousel using an image and a figure:
 
                     Title and Description
 
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
-    .. tab-item:: MyST Markdown
+    .. tab-item:: MyST
 
         .. code-block:: md
 
@@ -51,12 +51,12 @@ example carousel using an image and a figure:
             ```{figure} https://i.imgur.com/fWyn9A2l.jpg
             Title and Description
 
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
             ```
             ````
 
-    .. tab-item:: MyST Markdown Code Fences
+    .. tab-item:: MyST Code Fences
 
         .. code-block:: md
 
@@ -69,8 +69,8 @@ example carousel using an image and a figure:
             :::{figure} https://i.imgur.com/fWyn9A2l.jpg
             Title and Description
 
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
             :::
             ```
 
@@ -90,8 +90,8 @@ Since we're using the standard image/figure directives we can use the ``:target:
 
         Title and Description
 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
 .. tab-set::
 
@@ -110,10 +110,10 @@ Since we're using the standard image/figure directives we can use the ``:target:
 
                     Title and Description
 
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
-    .. tab-item:: MyST Markdown
+    .. tab-item:: MyST
 
         .. code-block:: md
 
@@ -129,12 +129,12 @@ Since we're using the standard image/figure directives we can use the ``:target:
 
             Title and Description
 
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
             ```
             ````
 
-    .. tab-item:: MyST Markdown Code Fences
+    .. tab-item:: MyST Code Fences
 
         .. code-block:: md
 
@@ -150,7 +150,7 @@ Since we're using the standard image/figure directives we can use the ``:target:
 
             Title and Description
 
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
             :::
             ```
