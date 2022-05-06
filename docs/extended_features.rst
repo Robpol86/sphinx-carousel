@@ -18,8 +18,8 @@ default with :option:`carousel_show_captions_below`.
 
         Title and Description
 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
     .. image:: https://i.imgur.com/fWyn9A2l.jpg
 
@@ -33,8 +33,8 @@ default with :option:`carousel_show_captions_below`.
 
             Title and Description
 
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
         .. image:: https://i.imgur.com/fWyn9A2l.jpg
 
