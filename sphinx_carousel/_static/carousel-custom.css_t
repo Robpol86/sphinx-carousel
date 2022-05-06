@@ -1,3 +1,27 @@
+/*
+ * Fix caption text color in PyData/Book Sphinx themes.
+ */
+
+.{{ bootstrap_prefix }}carousel h5, .{{ bootstrap_prefix }}carousel p {
+    color: revert;
+}
+
+.{{ bootstrap_prefix }}carousel h5 {
+    font-weight: bold;
+}
+
+/*
+ * Fix padding in RTD theme: https://github.com/Robpol86/sphinx-carousel/issues/31
+ */
+
+.rst-content section>.{{ bootstrap_prefix }}carousel {
+    margin-bottom: 24px
+}
+
+/*
+ * Buttons on top.
+ */
+
 .scc-top-control {
     align-items: start;
 }
@@ -13,13 +37,9 @@
     font-family: var(--bs-font-sans-serif);
 }
 
-.{{ bootstrap_prefix }}carousel h5, .{{ bootstrap_prefix }}carousel p {
-    color: revert;
-}
-
-.{{ bootstrap_prefix }}carousel h5 {
-    font-weight: bold;
-}
+/*
+ * Shadows.
+ */
 
 :not(.{{ bootstrap_prefix }}carousel-dark) .scc-shadow-control {
     filter:
