@@ -13,6 +13,14 @@
     font-family: var(--bs-font-sans-serif);
 }
 
+.{{ bootstrap_prefix }}carousel h5, .{{ bootstrap_prefix }}carousel p {
+    color: revert;
+}
+
+.{{ bootstrap_prefix }}carousel h5 {
+    font-weight: bold;
+}
+
 :not(.{{ bootstrap_prefix }}carousel-dark) .scc-shadow-control {
     filter:
         drop-shadow(0 0 0.4rem var(--bs-dark))
