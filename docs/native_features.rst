@@ -7,7 +7,7 @@ Below are options that expose native features of Bootstrap carousels.
 Controls
 ========
 
-https://getbootstrap.com/docs/5.1/components/carousel/#with-controls
+`Official documentation for this feature <https://getbootstrap.com/docs/5.1/components/carousel/#with-controls>`__
 
 Display previous and next controls overlayed on top of the carousel by using ``:show_controls:``. Enable this by default with
 :option:`carousel_show_controls`.
@@ -29,7 +29,7 @@ Display previous and next controls overlayed on top of the carousel by using ``:
 Indicators
 ==========
 
-https://getbootstrap.com/docs/5.1/components/carousel/#with-indicators
+`Official documentation for this feature <https://getbootstrap.com/docs/5.1/components/carousel/#with-indicators>`__
 
 Display image indicators overlayed on top of the carousel by using ``:show_indicators:``. Enable this by default with
 :option:`carousel_show_indicators`.
@@ -51,7 +51,7 @@ Display image indicators overlayed on top of the carousel by using ``:show_indic
 Crossfade
 =========
 
-https://getbootstrap.com/docs/5.1/components/carousel/#crossfade
+`Official documentation for this feature <https://getbootstrap.com/docs/5.1/components/carousel/#crossfade>`__
 
 Animate slides with a fade transition instead of a slide by using ``:show_fade:``. Enable this by default with
 :option:`carousel_show_fade`.
@@ -75,7 +75,7 @@ Animate slides with a fade transition instead of a slide by using ``:show_fade:`
 Dark Mode
 =========
 
-https://getbootstrap.com/docs/5.1/components/carousel/#dark-variant
+`Official documentation for this feature <https://getbootstrap.com/docs/5.1/components/carousel/#dark-variant>`__
 
 Show darker :ref:`controls <native_features:Controls>`, :ref:`indicators <native_features:Indicators>`, and captions by using
 ``:show_dark:``. Enable this by default with :option:`carousel_show_dark`.
@@ -88,7 +88,10 @@ Show darker :ref:`controls <native_features:Controls>`, :ref:`indicators <native
     .. image:: https://i.imgur.com/fmJnevTl.jpg
     .. figure:: https://i.imgur.com/fWyn9A2l.jpg
 
-        Hello World
+        Title and Description
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
 .. code-block:: rst
 
@@ -100,7 +103,10 @@ Show darker :ref:`controls <native_features:Controls>`, :ref:`indicators <native
         .. image:: https://i.imgur.com/fmJnevTl.jpg
         .. figure:: https://i.imgur.com/fWyn9A2l.jpg
 
-            Hello World
+            Title and Description
+
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
 Additional Options
 ==================

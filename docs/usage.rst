@@ -6,7 +6,12 @@ To use `Bootstrap Carousels <https://getbootstrap.com/docs/4.6/components/carous
 Sphinx directive to define a carousel, and within it use one or more
 `image <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#images>`_ directives or if you want captions
 use one or more `figure <https://docutils.sourceforge.io/docs/ref/rst/directives.html#figure>`_ directives. Below is an
-example carousel using an image and a figure:
+example carousel using an image and a figure.
+
+.. note::
+
+    Captions are hidden on mobile viewports. A workaround is to use
+    :ref:`show_captions_below <extended_features:Captions Below>`.
 
 .. carousel::
     :show_controls:

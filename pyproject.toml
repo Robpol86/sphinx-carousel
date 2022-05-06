@@ -64,7 +64,9 @@ pytest-cov = "*"
 pytest-icdiff = "*"
 TexSoup = "*"
 # Docs.
+pydata-sphinx-theme = {version = ">=0.8.0", python = ">=3.7"}
 sphinx-autobuild = "*"
+sphinx-book-theme = {version = ">=0.3.2", python = ">=3.7"}
 sphinx-copybutton = "*"
 sphinx-design = {version = "*", python = "^3.6"}
 sphinx-multi-theme = "*"

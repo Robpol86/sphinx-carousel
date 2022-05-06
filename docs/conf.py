@@ -42,7 +42,9 @@ rst_epilog = f"""
 html_copy_source = False
 html_theme = MultiTheme(
     [
-        Theme("sphinx_rtd_theme", "Read the Docs"),  # https://sphinx-themes.org/sample-sites/sphinx-rtd-theme/
+        Theme("sphinx_rtd_theme", "Read the Docs"),
+        Theme("pydata_sphinx_theme", "PyData Sphinx Theme"),
+        Theme("sphinx_book_theme", "Sphinx Book Theme"),
     ]
 )
 

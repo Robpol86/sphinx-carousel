@@ -51,6 +51,7 @@ jobs:
         run: make it
 
       - name: Build docs
+        if: "(matrix.python != '3.6') && (runner.os != 'Windows')"
         run: make docs
 
       - name: Build package
