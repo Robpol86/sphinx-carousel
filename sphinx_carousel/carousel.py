@@ -38,8 +38,8 @@ def copy_static(app: Sphinx):
     static_out.mkdir(exist_ok=True)
 
     if app.config.carousel_bootstrap_add_css_js:
-        copy_asset_file(str(static_in / "bootstrap-carousel.css"), str(static_out))
-        copy_asset_file(str(static_in / "bootstrap-carousel.js"), str(static_out))
+        copy_asset_file(str(static_in / "bootstrap-carousel.min.css"), str(static_out))
+        copy_asset_file(str(static_in / "bootstrap-carousel.min.js"), str(static_out))
 
     context = {
         "bootstrap_prefix": app.config["carousel_bootstrap_prefix"],
@@ -60,8 +60,8 @@ def include_static_on_demand(app: Sphinx, _: str, __: str, ___: dict, doctree: d
         return
 
     if app.config.carousel_bootstrap_add_css_js:
-        app.add_css_file("bootstrap-carousel.css")
-        app.add_js_file("bootstrap-carousel.js")
+        app.add_css_file("bootstrap-carousel.min.css")
+        app.add_js_file("bootstrap-carousel.min.js")
 
     app.add_css_file("carousel-custom.css")
 

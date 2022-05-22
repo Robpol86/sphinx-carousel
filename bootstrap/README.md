@@ -10,8 +10,8 @@ To build the static files run these commands (requires [Docker](https://www.dock
 ```bash
 docker build -t scbs .
 container_id="$(docker create scbs)"
-docker cp "$container_id:/dist/bootstrap-carousel.css" ../sphinx_carousel/_static/
-docker cp "$container_id:/dist/bootstrap-carousel.js" ../sphinx_carousel/_static/
+docker cp "$container_id:/dist/bootstrap-carousel.min.css" ../sphinx_carousel/_static/
+docker cp "$container_id:/dist/bootstrap-carousel.min.js" ../sphinx_carousel/_static/
 docker rm -v "$container_id"
 ```
 

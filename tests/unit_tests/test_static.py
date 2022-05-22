@@ -14,8 +14,8 @@ def test_copied(sphinx_app: SphinxTestApp, testroot: str):
     path_custom_css = Path(sphinx_app.outdir) / "_static" / "carousel-custom.css"
     assert path_custom_css.is_file()
 
-    path_bs_css = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.css"
-    path_bs_js = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.js"
+    path_bs_css = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.min.css"
+    path_bs_js = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.min.js"
     if testroot.endswith("on"):
         assert path_bs_css.is_file()
         assert path_bs_js.is_file()
@@ -30,8 +30,8 @@ def test_copied_latex(sphinx_app: SphinxTestApp, _):
     path_custom_css = Path(sphinx_app.outdir) / "_static" / "carousel-custom.css"
     assert not path_custom_css.is_file()
 
-    path_bs_css = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.css"
-    path_bs_js = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.js"
+    path_bs_css = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.min.css"
+    path_bs_js = Path(sphinx_app.outdir) / "_static" / "bootstrap-carousel.min.js"
     assert not path_bs_css.is_file()
     assert not path_bs_js.is_file()
 
@@ -46,11 +46,11 @@ def test_index(index_html: BeautifulSoup, testroot: str):
 
     assert "_static/carousel-custom.css" in hrefs
     if testroot.endswith("on"):
-        assert "_static/bootstrap-carousel.css" in hrefs
-        assert "_static/bootstrap-carousel.js" in sources
+        assert "_static/bootstrap-carousel.min.css" in hrefs
+        assert "_static/bootstrap-carousel.min.js" in sources
     else:
-        assert "_static/bootstrap-carousel.css" not in hrefs
-        assert "_static/bootstrap-carousel.js" not in sources
+        assert "_static/bootstrap-carousel.min.css" not in hrefs
+        assert "_static/bootstrap-carousel.min.js" not in sources
 
 
 @pytest.mark.parametrize("_", [pytest.param(r, marks=pytest.mark.sphinx("html", testroot=r)) for r in ROOTS])
