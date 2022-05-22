@@ -9,6 +9,7 @@ description = "A Sphinx extension for creating slideshows using Bootstrap Carous
 readme = "README.md"
 authors = ["Robpol86 <robpol86@gmail.com>"]
 license = "BSD-2-Clause"
+packages = [{include = "sphinx_carousel"}]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: MacOS X",
