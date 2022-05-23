@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Minified CSS and JS (https://github.com/Robpol86/sphinx-carousel/issues/29)
+- Minified CSS and JS (https://github.com/Robpol86/sphinx-carousel/issues/29).
+- Added `.. figure-carousel::` directive with `:no_title:` option (https://github.com/Robpol86/sphinx-carousel/issues/88).
 
 ## [1.0.0] - 2022-05-07
 
@@ -17,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix RTD theme padding (https://github.com/Robpol86/sphinx-carousel/issues/31)
+- Fix RTD theme padding (https://github.com/Robpol86/sphinx-carousel/issues/31).
 
 ## [0.0.2] - 2022-05-06
 

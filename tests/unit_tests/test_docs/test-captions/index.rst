@@ -20,3 +20,22 @@
 
         LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT, SED DO EIUSMOD
         TEMPOR INCIDIDUNT UT LABORE ET DOLORE MAGNA ALIQUA.
+    .. figure-carousel:: https://i.imgur.com/e.jpg
+        :no_title:
+
+        Just the description.
+    .. figure-carousel:: https://i.imgur.com/f.jpg
+        :no_title:
+
+        This is part of the description.
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+    .. figure-carousel:: https://i.imgur.com/g.jpg
+        :no_title:
+
+        A
+
+        B
+
+        C
