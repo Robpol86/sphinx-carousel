@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - N/A
 
+## [1.2.0] - 2022-05-23
+
+### Removed
+
+- Removed `.. figure-carousel::` directive. Didn't know about `..` in figure documentation.
+
 ## [1.1.0] - 2022-05-23
 
 ### Added

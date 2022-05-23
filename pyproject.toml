@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "sphinx-carousel"
-version = "1.1.0"
+version = "1.2.0"
 description = "A Sphinx extension for creating slideshows using Bootstrap Carousels."
 readme = "README.md"
 authors = ["Robpol86 <robpol86@gmail.com>"]
