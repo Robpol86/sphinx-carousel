@@ -23,8 +23,9 @@ default with :option:`carousel_show_captions_below`.
 
     .. image:: https://i.imgur.com/fWyn9A2l.jpg
 
-    .. figure-carousel:: https://i.imgur.com/fmJnevTl.jpg
-        :no_title:
+    .. figure:: https://i.imgur.com/fmJnevTl.jpg
+
+        ..
 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
         eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -44,8 +45,9 @@ default with :option:`carousel_show_captions_below`.
 
         .. image:: https://i.imgur.com/fWyn9A2l.jpg
 
-        .. figure-carousel:: https://i.imgur.com/fmJnevTl.jpg
-            :no_title:
+        .. figure:: https://i.imgur.com/fmJnevTl.jpg
+
+            ..
 
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua.

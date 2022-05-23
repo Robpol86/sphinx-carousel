@@ -163,8 +163,9 @@ Since we're using the standard image/figure directives we can use the ``:target:
 Captions Without Titles
 =======================
 
-If you have an image with a short caption it may look better without bold text. Use the ``:no_title:`` option with the
-``.. figure-carousel::`` directive to accomplish this:
+If you have an image with a short caption it may look better without bold text. To disable the caption title use ".."
+(`an empty RST comment <https://docutils.sourceforge.io/docs/ref/rst/directives.html#figure>`_) or "%"
+`in MyST <https://myst-parser.readthedocs.io/en/latest/syntax/syntax.html#comments>`_.
 
 .. carousel::
     :show_controls:
@@ -174,8 +175,9 @@ If you have an image with a short caption it may look better without bold text. 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
         eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
-    .. figure-carousel:: https://i.imgur.com/fWyn9A2l.jpg
-        :no_title:
+    .. figure:: https://i.imgur.com/fWyn9A2l.jpg
+
+        ..
 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
         eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -194,8 +196,9 @@ If you have an image with a short caption it may look better without bold text. 
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                     eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
-                .. figure-carousel:: https://i.imgur.com/fWyn9A2l.jpg
-                    :no_title:
+                .. figure:: https://i.imgur.com/fWyn9A2l.jpg
+
+                    ..
 
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                     eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -213,8 +216,9 @@ If you have an image with a short caption it may look better without bold text. 
             eiusmod tempor incididunt ut labore et dolore magna aliqua.
             ```
 
-            ```{figure-carousel} https://i.imgur.com/fWyn9A2l.jpg
-            :no_title:
+            ```{figure} https://i.imgur.com/fWyn9A2l.jpg
+
+            %
 
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -234,8 +238,9 @@ If you have an image with a short caption it may look better without bold text. 
             eiusmod tempor incididunt ut labore et dolore magna aliqua.
             :::
 
-            :::{figure-carousel} https://i.imgur.com/fWyn9A2l.jpg
-            :no_title:
+            :::{figure} https://i.imgur.com/fWyn9A2l.jpg
+
+            %
 
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua.
