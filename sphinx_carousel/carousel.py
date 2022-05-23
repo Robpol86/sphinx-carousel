@@ -12,7 +12,7 @@ from sphinx.application import Sphinx
 from sphinx.util.fileutil import copy_asset_file
 
 from sphinx_carousel import __version__, nodes
-from sphinx_carousel.directives import Carousel
+from sphinx_carousel.directives import Carousel, FigureCarousel
 
 CONF_DEFAULT_BOOTSTRAP_ADD_CSS_JS = True
 CONF_DEFAULT_BOOTSTRAP_PREFIX = "scbs-"
@@ -83,6 +83,7 @@ def setup(app: Sphinx) -> Dict[str, str]:
     app.add_config_value("carousel_show_indicators", CONF_DEFAULT_SHOW_INDICATORS, "html")
     app.add_config_value("carousel_show_shadows", CONF_DEFAULT_SHOW_SHADOWS, "html")
     app.add_directive("carousel", Carousel)
+    app.add_directive("figure-carousel", FigureCarousel)
     app.connect("builder-inited", copy_static)
     app.connect("html-page-context", include_static_on_demand)
     nodes.CarouselCaptionNode.add_node(app)

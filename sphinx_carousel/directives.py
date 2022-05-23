@@ -1,8 +1,9 @@
 """Sphinx directives."""
 from typing import List, Optional, Tuple
 
-from docutils.nodes import caption, Element, image as docutils_image, legend, reference
+from docutils.nodes import caption, Element, figure, image as docutils_image, legend, reference
 from docutils.parsers.rst.directives import flag, unchanged
+from docutils.parsers.rst.directives.images import Figure
 from sphinx.util import logging as sphinx_logging
 from sphinx.util.docutils import SphinxDirective
 
@@ -128,3 +129,22 @@ class Carousel(SphinxDirective):
             main_div.append(nodes.CarouselControlNode(top=buttons_on_top, shadow=shadows))
 
         return [main_div]
+
+
+class FigureCarousel(Figure):
+    """Standard `..figure::` directive with additional options."""
+
+    option_spec = Figure.option_spec.copy()
+    option_spec["no_title"] = flag
+
+    def run(self) -> List[Element]:
+        """Main method."""
+        if "no_title" in self.options and self.content:
+            self.content.insert(0, "Fake Title", *self.content.items[0])
+            self.content.insert(1, "", *self.content.items[0])
+        ret: List[figure] = super().run()  # noqa
+        if "no_title" in self.options and self.content:
+            figure_node = ret[0]
+            caption_node = figure_node.next_node(caption, siblings=False, ascend=False, descend=True)
+            figure_node.remove(caption_node)
+        return ret

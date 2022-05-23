@@ -346,9 +346,10 @@ class CarouselCaptionNode(SubNode):
             )
         )
 
-        writer.body.append(writer.starttag(node, "h5", ""))
-        writer.body.append(node.title)
-        writer.body.append("</h5>\n")
+        if node.title:
+            writer.body.append(writer.starttag(node, "h5", ""))
+            writer.body.append(node.title)
+            writer.body.append("</h5>\n")
 
         if node.description:
             writer.body.append(writer.starttag(node, "p"))
