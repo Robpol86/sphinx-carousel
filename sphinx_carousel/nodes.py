@@ -1,11 +1,12 @@
 """Docutils nodes."""
 # pylint: disable=keyword-arg-before-vararg
 from abc import ABCMeta, abstractmethod
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Sequence, Union
 
 from docutils import nodes
 from sphinx.application import Sphinx
 from sphinx.writers.html5 import HTML5Translator
+from sphinx.addnodes import translatable
 
 
 class BaseNode(nodes.Element, nodes.General):
@@ -302,7 +303,7 @@ class CarouselIndicatorsNode(SubNode):
         writer.body.append("</div>\n")
 
 
-class CarouselCaptionNode(SubNode):
+class CarouselCaptionNode(SubNode, translatable):
     """Captions."""
 
     CLASSES = ["carousel-caption"]
@@ -321,8 +322,10 @@ class CarouselCaptionNode(SubNode):
         :param kwargs: Passed to parent class.
         """
         super().__init__(*args, **kwargs)
-        self.title = title
-        self.description = description
+        if title:
+            self["title"] = title
+        if description:
+            self["description"] = description
         self.below = below
 
     @property
@@ -346,17 +349,37 @@ class CarouselCaptionNode(SubNode):
             )
         )
 
-        if node.title:
+        if "title" in node:
             writer.body.append(writer.starttag(node, "h5", ""))
-            writer.body.append(node.title)
+            writer.body.append(node["title"])
             writer.body.append("</h5>\n")
 
-        if node.description:
+        if "description" in node:
             writer.body.append(writer.starttag(node, "p"))
-            writer.body.append(node.description)
+            writer.body.append(node["description"])
             writer.body.append("\n</p>\n")
 
     @staticmethod
     def html_depart(writer: HTML5Translator, _):
         """Append closing tags to document body list."""
         writer.body.append("</div>\n")
+
+    def preserve_original_messages(self) -> None:
+        if "title" in self:
+            self["rawtitle"] =  self["title"]
+        if "description" in self:
+            self["rawdescription"] = self["description"]
+    
+    def extract_original_messages(self) -> Sequence[str]:
+        messages: List[str] = []
+        if "rawtitle" in self:
+            messages.append(self["rawtitle"])
+        if "rawdescription" in self:
+            messages.append(self["rawdescription"])
+        return messages
+    
+    def apply_translated_message(self, original_message: str, translated_message: str) -> None:
+        if "rawtitle" in self and self["rawtitle"] == original_message:
+            self["title"] = translated_message
+        if "rawdescription" in self and self["rawdescription"] == original_message:
+            self["description"] = translated_message
