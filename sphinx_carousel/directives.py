@@ -92,7 +92,9 @@ class Carousel(SphinxDirective):
             image["classes"] += [f"{prefix}d-block", f"{prefix}w-100"]
             child_nodes = [linked_image or image]
             if title or description:
-                child_nodes.append(nodes.CarouselCaptionNode(title=title, description=description, below=captions_below))
+                caption = nodes.CarouselCaptionNode(title=title, description=description, below=captions_below)
+                self.set_source_info(caption)
+                child_nodes.append(caption)
             items.append(nodes.CarouselItemNode("", *child_nodes, active=idx == 0))
 
         return nodes.CarouselInnerNode("", *items)
