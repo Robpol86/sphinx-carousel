@@ -91,4 +91,4 @@ def setup(app: Sphinx) -> Dict[str, str]:
     nodes.CarouselInnerNode.add_node(app)
     nodes.CarouselItemNode.add_node(app)
     nodes.CarouselMainNode.add_node(app)
-    return dict(version=__version__)
+    return dict(version=__version__, parallel_read_safe=True)
